@@ -38,3 +38,7 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+#don't push model outputs or plots 
+outputs/ 
+plots/
