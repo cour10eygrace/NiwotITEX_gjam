@@ -7,7 +7,7 @@ library(ggpubr)
 #alphas
 #BY TREATMENT----
 #XXX----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_XXXoutput.RData")
+load(file = "outputs/modDAtime_XXXoutput.RData")
 alphas<-as.data.frame(modDAtimeXXX$chains$alphaGibbs)
 names<-modDAtimeXXX$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -123,7 +123,7 @@ XXXplot_res<-ggplot(posta, aes(x=log(intra_inter_res),..scaled.., fill=spp))+ ge
 #deschampsia NFD others are not 
 
 #XNX----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_XNXoutput.RData")
+load(file = "outputs/modDAtime_XNXoutput.RData")
 alphas<-as.data.frame(modDAtimeXNX$chains$alphaGibbs)
 names<-modDAtimeXNX$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -215,7 +215,7 @@ XNXplot_res<-ggplot(postb, aes(x=log(intra_inter_res),..scaled.., fill=spp))+ ge
 #Geum and Artsco means >1 but confidence intervals cross 1
 
 #XXW----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_XXWoutput.RData")
+load(file = "outputs/modDAtime_XXWoutput.RData")
 alphas<-as.data.frame(modDAtimeXXW$chains$alphaGibbs)
 names<-modDAtimeXXW$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -305,7 +305,7 @@ XXWplot_res<-ggplot(postc, aes(log(x=intra_inter_res),..scaled.., fill=spp))+ ge
 #nothing significantly different from 1 under warming 
 
 #PXX----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXXoutput.RData")
+load(file = "outputs/modDAtime_PXXoutput.RData")
 alphas<-as.data.frame(modDAtimePXX$chains$alphaGibbs)
 names<-modDAtimePXX$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -393,7 +393,7 @@ PXXplot_res<-ggplot(postd, aes(x=log(intra_inter_res),..scaled.., fill=spp))+ ge
   ggtitle("Snow addition")
 
 #PNX----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PNXoutput.RData")
+load(file = "outputs/modDAtime_PNXoutput.RData")
 alphas<-as.data.frame(modDAtimePNX$chains$alphaGibbs)
 names<-modDAtimePNX$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -481,7 +481,7 @@ PNXplot_res<-ggplot(poste, aes(x=log(intra_inter_res),..scaled.., fill=spp))+ ge
   ggtitle("Snow + N ")
 
 #PNW----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PNWoutput.RData")
+load(file = "outputs/modDAtime_PNWoutput.RData")
 alphas<-as.data.frame(modDAtimePNW$chains$alphaGibbs)
 names<-modDAtimePNW$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -572,7 +572,7 @@ PNWplot_res<-ggplot(postf, aes(x=log(intra_inter_res),..scaled.., fill=spp))+
 
 
 #XNW----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_XNWoutput.RData")
+load(file = "outputs/modDAtime_XNWoutput.RData")
 alphas<-as.data.frame(modDAtimeXNW$chains$alphaGibbs)
 names<-modDAtimeXNW$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -663,7 +663,7 @@ XNWplot_res<-ggplot(postg, aes(x=log(intra_inter_res),..scaled.., fill=spp))+
 
 
 #PXW----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXWoutput.RData")
+load(file = "outputs/modDAtime_PXWoutput.RData")
 alphas<-as.data.frame(modDAtimePXW$chains$alphaGibbs)
 names<-modDAtimePXW$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -813,7 +813,7 @@ ggplot(postx, aes(x=log(intra_inter_res), fill=treat))+ geom_boxplot( )+
 
 #BY TIME----
 #early----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_earlytrtoutput.RData")
+load(file = "outputs/modDAtime_earlytrtoutput.RData")
 alphas<-as.data.frame(modDAtime_earlytrt$chains$alphaGibbs)
 names<-modDAtime_earlytrt$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -902,7 +902,7 @@ Earlyplot_res<-ggplot(posta, aes(x=log(intra_inter_res),..scaled.., fill=spp))+
   ggtitle("Early")
 
 #mid----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_midtrtoutput.RData")
+load(file = "outputs/modDAtime_midtrtoutput.RData")
 alphas<-as.data.frame(modDAtime_midtrt$chains$alphaGibbs)
 names<-modDAtime_midtrt$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -995,7 +995,7 @@ Midplot_res<-ggplot(postb, aes(x=log(intra_inter_res),..scaled.., fill=spp))+
 
 
 #late----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_latetrtoutput.RData")
+load(file = "outputs/modDAtime_latetrtoutput.RData")
 alphas<-as.data.frame(modDAtime_latetrt$chains$alphaGibbs)
 names<-modDAtime_latetrt$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -1108,7 +1108,7 @@ ggplot(post, aes(x=log(intra_inter_res), fill=fct_reorder(time,.x = log(intra_in
 #Adler 2018 Ecol Letters
 
 #XXX----
-  load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_XXXoutput.RData")
+  load(file = "outputs/modDAtime_XXXoutput.RData")
   alphas<-as.data.frame(modDAtimeXXX$chains$alphaGibbs)
   names<-modDAtimeXXX$parameters$alphaTable$`alpha_{to, from}`
   colnames(alphas)<-names
@@ -1213,7 +1213,7 @@ CTLplot<-ggplot(subset(rhos, dom1=='DOM'& dom2=="DOM"), aes(x=log(rho),fill=spp2
  
 
 #XNX----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_XNXoutput.RData")
+load(file = "outputs/modDAtime_XNXoutput.RData")
 alphas<-as.data.frame(modDAtimeXNX$chains$alphaGibbs)
 names<-modDAtimeXNX$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -1310,7 +1310,7 @@ Nplot<-ggplot(subset(rhos, dom1=='DOM'&dom2=="DOM"), aes(x=log(rho),fill=spp2))+
   xlab("Log Rho")+ theme_classic()+ facet_wrap(~spp1)+ ggtitle("N addition")
 
 #XXW----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_XXWoutput.RData")
+load(file = "outputs/modDAtime_XXWoutput.RData")
 alphas<-as.data.frame(modDAtimeXXW$chains$alphaGibbs)
 names<-modDAtimeXXW$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -1398,7 +1398,7 @@ Warmplot<-ggplot(subset(rhos, dom1=='DOM'&dom2=="DOM"), aes(x=log(rho),fill=spp2
   xlab("Log Rho")+ theme_classic()+ facet_wrap(~spp1)+ ggtitle("Warming")
 
 #PXX----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXXoutput.RData")
+load(file = "outputs/modDAtime_PXXoutput.RData")
 alphas<-as.data.frame(modDAtimePXX$chains$alphaGibbs)
 names<-modDAtimePXX$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -1487,7 +1487,7 @@ Snowplot<-ggplot(subset(rhos, dom1=='DOM'&dom2=="DOM"), aes(x=log(rho),fill=spp2
   xlab("Log Rho")+ theme_classic()+ facet_wrap(~spp1)+ ggtitle("Snow addition")
 
 #PNX----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PNXoutput.RData")
+load(file = "outputs/modDAtime_PNXoutput.RData")
 alphas<-as.data.frame(modDAtimePNX$chains$alphaGibbs)
 names<-modDAtimePNX$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
@@ -1578,7 +1578,7 @@ SnowNplot<-ggplot(subset(rhos, dom1=='DOM'&dom2=="DOM"), aes(x=log(rho),fill=spp
   #xlab("Log Rho")+ theme_classic()+ facet_wrap(~spp1)+ ggtitle("Snow + N addition")
 
 #PNW----
-load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PNWoutput.RData")
+load(file = "outputs/modDAtime_PNWoutput.RData")
 alphas<-as.data.frame(modDAtimePNW$chains$alphaGibbs)
 names<-modDAtimePNW$parameters$alphaTable$`alpha_{to, from}`
 colnames(alphas)<-names
