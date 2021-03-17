@@ -12,11 +12,11 @@ library(lmerTest)
 d <- "https://github.com/jimclarkatduke/gjam/blob/master/gjamTimeFunctions.R?raw=True"
 source_url(d)
 #load environmental Rdata 
-load(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/data/Enviro.Rdata")
+load(file="data/Enviro.Rdata")
 
 #NWT species counts----
 #all years-QA/QC JGS 12/18/20
-sppcomp <- read.csv("C:/Users/court/Google Drive/CU Postdoc/LTREB/data/NWT_ITEX_SpComp_data_L1.csv")
+sppcomp <- read.csv("data/NWT_ITEX_SpComp_data_L1.csv")
 sppcomp<-filter(sppcomp, !is.na(year))#remove spaces 
 sppcomp<-rename(sppcomp, spp=JGS_code)%>%unite(., plotyear, plot, year, remove=F)
 
@@ -197,8 +197,8 @@ modelList <- list(
 modDAtimePXX<- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, modelList = modelList)
 
 # save output
-save(modDAtimePXX,file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXXoutput.RData")
-#load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXXoutput.RData")
+save(modDAtimePXX,file = "outputs/modDAtime_PXXoutput.RData")
+#load(file = "outputs/modDAtime_PXXoutput.RData")
 
 # plot output
 specColor <- c(
@@ -213,7 +213,7 @@ specColor <- c(
 
 #plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
 plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
-                 outFolder = 'C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXXplots')
+                 outFolder = 'plots/modDAtime_PXXplots')
 gjamPlot(modDAtimePXX, plotPars)
 
 
@@ -224,7 +224,7 @@ alphaX<-modDAtimePXX$parameters$alphaMu
 colnames(alphaX)<-colnames(ydata)
 row.names(alphaX)<-colnames(alphaX)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXXplots/alpha_plot.pdf")
+pdf(file="plots/modDAtime_PXXplots/alpha_plot.pdf")
 corrplot(alphaX ,method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="alphas", is.corr = FALSE, 
          mar = c(2, 2, 2, 2), cl.lim = c(-1, 0))
@@ -234,7 +234,7 @@ corr<-modDAtimePXX$parameters$corMu
 colnames(corr)<-colnames(ydata)
 row.names(corr)<-colnames(corr)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXXplots/corr_plot.pdf")
+pdf(file="plots/modDAtime_PXXplots/corr_plot.pdf")
 corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag = F, main="correlations" ,
          mar = c(2, 2, 2, 2))  
@@ -244,10 +244,10 @@ dev.off()
 wstarPXX <- .wrapperEquilAbund(output =   modDAtimePXX, covars = c('depthcm', 'avgT', 'Ndep'), BYGROUP = T,
                                nsim = 10, ngrid = 10,
                                verbose = T)
-save(wstarPXX, file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/wstar_PXXoutput.RData")
-#load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/wstar_PXXoutput.RData")
+save(wstarPXX, file = "outputs/wstar_PXXoutput.RData")
+#load(file = "outputs/wstar_PXXoutput.RData")
 
 #plot
-outFolder="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_PXXplots"
+outFolder="plots/modDAtime_PXXplots"
 wstar=wstarPXX
-source("C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/ploteqabund.R") 
+source("scripts/ploteqabund.R") 
