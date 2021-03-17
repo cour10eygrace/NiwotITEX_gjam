@@ -12,11 +12,11 @@ library(lmerTest)
 d <- "https://github.com/jimclarkatduke/gjam/blob/master/gjamTimeFunctions.R?raw=True"
 source_url(d)
 #load environmental Rdata 
-load(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/data/Enviro.Rdata")
+load(file="data/Enviro.Rdata")
 
 #NWT species counts----
 #all years-QA/QC JGS 12/18/20
-sppcomp <- read.csv("C:/Users/court/Google Drive/CU Postdoc/LTREB/data/NWT_ITEX_SpComp_data_L1.csv")
+sppcomp <- read.csv("data/NWT_ITEX_SpComp_data_L1.csv")
 sppcomp<-filter(sppcomp, !is.na(year))#remove spaces 
 sppcomp<-rename(sppcomp, spp=JGS_code)%>%unite(., plotyear, plot, year, remove=F)
 
@@ -191,8 +191,8 @@ modelList <- list(
 modDAtime_trt <- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, modelList = modelList)
 
 # save output
-save(modDAtime_trt, file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_trtoutput.RData")
-#load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_trtoutput.RData")
+save(modDAtime_trt, file = "outputs/modDAtime_trtoutput.RData")
+#load(file = "outputs/modDAtime_trtoutput.RData")
 
 # plot output
 specColor <- c(
@@ -207,7 +207,7 @@ specColor <- c(
 
 #plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
 plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
-                 outFolder = 'C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_trtplots')
+                 outFolder = 'plots/modDAtime_trtplots')
 gjamPlot(modDAtime_trt, plotPars)
 
 #spp alphas
@@ -215,7 +215,7 @@ alphaX<-modDAtime_trt$parameters$alphaMu
 colnames(alphaX)<-colnames(ydata)
 row.names(alphaX)<-colnames(alphaX)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_trtplots/alpha_plot.pdf")
+pdf(file="plots/modDAtime_trtplots/alpha_plot.pdf")
 corrplot(alphaX ,method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="alphas",  is.corr = F,
          mar = c(2, 2, 2, 2), cl.lim = c(-1, 0))
@@ -225,23 +225,11 @@ corr<-modDAtime_trt$parameters$corMu
 colnames(corr)<-colnames(ydata)
 row.names(corr)<-colnames(corr)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_trtplots/corr_plot.pdf")
+pdf(file="plots/modDAtime_trtplots/corr_plot.pdf")
 corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag = F, main="correlations" ,
          mar = c(2, 2, 2, 2))  
 dev.off()
-
-
-#calculate equillibrium abundance 
-#wstaret <- .wrapperEquilAbund(output =   modDAtime_earlytrt, covars = c('snow', 'temp', 'N'),BYGROUP = T,
-#                             nsim = 10, ngrid=10,
-#                            verbose = T)
-#save output 
-#save(wstaret, file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_wstaret.RData")
-#outFolder="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_earlytrtplots"
-#wstar=wstaret
-#source("C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/ploteqabund.R") #plotting functions 
-
 
 #early trt----
 spp_abundw_early<-subset(spp_abundw, year<2011)
@@ -353,8 +341,8 @@ modelList <- list(
 modDAtime_earlytrt <- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, modelList = modelList)
 
 # save output
-save(modDAtime_earlytrt, file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_earlytrtoutput.RData")
-#load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_earlytrtoutput.RData")
+save(modDAtime_earlytrt, file = "outputs/modDAtime_earlytrtoutput.RData")
+#load(file = "outputs/modDAtime_earlytrtoutput.RData")
 
 # plot output
 specColor <- c(
@@ -369,7 +357,7 @@ specColor <- c(
 
 #plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
 plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
-                 outFolder = 'C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_earlytrtplots')
+                 outFolder = 'plots/modDAtime_earlytrtplots')
 gjamPlot(modDAtime_earlytrt, plotPars)
 
 #spp alphas
@@ -377,7 +365,7 @@ alphaX<-modDAtime_earlytrt$parameters$alphaMu
 colnames(alphaX)<-colnames(ydata)
 row.names(alphaX)<-colnames(alphaX)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_earlytrtplots/alpha_plot.pdf")
+pdf(file="plots/modDAtime_earlytrtplots/alpha_plot.pdf")
 corrplot(alphaX ,method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="alphas",  is.corr = F,
          mar = c(2, 2, 2, 2), cl.lim = c(-1, 0))
@@ -387,7 +375,7 @@ corr<-modDAtime_earlytrt$parameters$corMu
 colnames(corr)<-colnames(ydata)
 row.names(corr)<-colnames(corr)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_earlytrtplots/corr_plot.pdf")
+pdf(file="plots/modDAtime_earlytrtplots/corr_plot.pdf")
 corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag = F, main="correlations" ,
          mar = c(2, 2, 2, 2))  
@@ -516,8 +504,8 @@ modelList <- list(
 modDAtime_midtrt <- gjam(formula=as.formula(~depthcm+Ndep+avgT), xdata = xdata, ydata = ydata, modelList = modelList)
 
 # save output
-save(modDAtime_midtrt, file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_midtrtoutput.RData")
-#load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_midtrtoutput.RData")
+save(modDAtime_midtrt, file = "outputs/modDAtime_midtrtoutput.RData")
+#load(file = "outputs/modDAtime_midtrtoutput.RData")
 
 # plot output
 specColor <- c(
@@ -532,7 +520,7 @@ specColor <- c(
 
 #plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
 plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
-                 outFolder = 'C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_midtrtplots')
+                 outFolder = 'plots/modDAtime_midtrtplots')
 gjamPlot(modDAtime_midtrt, plotPars)
 
 #spp alphas
@@ -540,7 +528,7 @@ alphaX<-modDAtime_midtrt$parameters$alphaMu
 colnames(alphaX)<-colnames(ydata)
 row.names(alphaX)<-colnames(alphaX)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_midtrtplots/alpha_plot.pdf")
+pdf(file="plots/modDAtime_midtrtplots/alpha_plot.pdf")
 corrplot(alphaX ,method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="alphas",  is.corr = F,
          mar = c(2, 2, 2, 2), cl.lim = c(-1, 0))
@@ -550,20 +538,11 @@ corr<-modDAtime_midtrt$parameters$corMu
 colnames(corr)<-colnames(ydata)
 row.names(corr)<-colnames(corr)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_midtrtplots/corr_plot.pdf")
+pdf(file="plots/modDAtime_midtrtplots/corr_plot.pdf")
 corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag = F, main="correlations" ,
          mar = c(2, 2, 2, 2))  
 dev.off()
-
-#calculate equillibrium abundance 
-#wstarmt <- .wrapperEquilAbund(output =   modDAtime_midtrt, covars = c('snow', 'temp', 'N'),BYGROUP = T,
-#                              nsim = 10, ngrid=10, 
-#                              verbose = T)
-
-#outFolder="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_midtrtplots"
-#wstar=wstarmt
-#source("C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/ploteqabund.R") #plotting functions 
 
 #late trt----
 spp_abundw_late<-subset(spp_abundw, year>2015)
@@ -674,8 +653,8 @@ modelList <- list(
 modDAtime_latetrt <- gjam(formula=as.formula(~depthcm+Ndep+avgT), xdata = xdata, ydata = ydata, modelList = modelList)
 
 # save output
-save(modDAtime_latetrt, file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_latetrtoutput.RData")
-#load(file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_latetrtoutput.RData")
+save(modDAtime_latetrt, file = "outputs/modDAtime_latetrtoutput.RData")
+#load(file = "outputs/modDAtime_latetrtoutput.RData")
 
 # plot output
 specColor <- c(
@@ -690,7 +669,7 @@ specColor <- c(
 
 #plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
 plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
-                 outFolder = 'C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_latetrtplots')
+                 outFolder = 'plots/modDAtime_latetrtplots')
 gjamPlot(modDAtime_latetrt, plotPars)
 
 
@@ -699,7 +678,7 @@ alphaX<-modDAtime_latetrt$parameters$alphaMu
 colnames(alphaX)<-colnames(ydata)
 row.names(alphaX)<-colnames(alphaX)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_latetrtplots/alpha_plot.pdf")
+pdf(file="plots/modDAtime_latetrtplots/alpha_plot.pdf")
 corrplot(alphaX ,method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="alphas",  is.corr = F,
          mar = c(2, 2, 2, 2), cl.lim = c(-1, 0)) 
@@ -709,18 +688,10 @@ corr<-modDAtime_latetrt$parameters$corMu
 colnames(corr)<-colnames(ydata)
 row.names(corr)<-colnames(corr)  
 
-pdf(file="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_latetrtplots/corr_plot.pdf")
+pdf(file="plots/modDAtime_latetrtplots/corr_plot.pdf")
 corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag = F, main="correlations" ,
          mar = c(2, 2, 2, 2))  
 dev.off()
 
-
-#calculate equillibrium abundance 
-#wstarlt <- .wrapperEquilAbund(output =   modDAtime_latetrt, covars = c('snow', 'temp', 'N'),BYGROUP = T,
-#                              nsim = 10, ngrid = 10, 
-#                              verbose = T)
-#outFolder="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_latetrtplots"
-#wstar=wstarlt
-#source("C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/ploteqabund.R") #plotting functions 
 
