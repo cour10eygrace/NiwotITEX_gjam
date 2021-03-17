@@ -381,17 +381,6 @@ corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "bl
          mar = c(2, 2, 2, 2))  
 dev.off()
 
-
-#calculate equillibrium abundance 
-#wstaret <- .wrapperEquilAbund(output =   modDAtime_earlytrt, covars = c('snow', 'temp', 'N'),BYGROUP = T,
- #                             nsim = 10, ngrid=10,
-  #                            verbose = T)
-#save output 
-#save(wstaret, file = "C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_wstaret.RData")
-#outFolder="C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/modDAtime_earlytrtplots"
-#wstar=wstaret
-#source("C:/Users/court/Google Drive/CU Postdoc/LTREB/gjam/ploteqabund.R") #plotting functions 
-
 #middle trt----
 spp_abundw_mid<-subset(spp_abundw, year>2010&year<2016)
 
