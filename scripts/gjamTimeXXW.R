@@ -242,8 +242,8 @@ dev.off()
 
 
 #calculate equillibrium abundance 
-wstarXXW <- .wrapperEquilAbund(output =   modDAtimeXXW, covars = c('depthcm', 'avgT', 'Ndep'), BYGROUP = T,
-                               nsim = 10, ngrid=10, 
+wstarXXW <- .wrapperEquilAbund(output =   modDAtimeXXW, covars = c('depthcm', 'avgT', 'Ndep'), BYGROUP = F,
+                               nsim = 100, ngrid=10, 
                                verbose = T)
 save(wstarXXW, file = "outputs/wstar_XXWoutput.RData")
 #load(file = "outputs/wstar_XXWoutput.RData")

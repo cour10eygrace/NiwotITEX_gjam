@@ -241,8 +241,8 @@ corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "bl
 dev.off()
 
 #calculate equillibrium abundance 
-wstarPXW <- .wrapperEquilAbund(output =   modDAtimePXW, covars = c('depthcm', 'avgT', 'Ndep'), BYGROUP = T,
-                               nsim = 10, ngrid = 10,
+wstarPXW <- .wrapperEquilAbund(output =   modDAtimePXW, covars = c('depthcm', 'avgT', 'Ndep'), BYGROUP = F,
+                               nsim = 100, ngrid = 10,
                                verbose = T)
 save(wstarPXW, file = "outputs/wstar_PXWoutput.RData")
 #load(file = "outputs/wstar_PXWoutput.RData")
