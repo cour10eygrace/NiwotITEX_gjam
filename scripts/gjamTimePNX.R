@@ -241,7 +241,7 @@ dev.off()
 
 #calculate equillibrium abundance 
 wstarPNX <- .wrapperEquilAbund(output =   modDAtimePNX, covars = c('depthcm', 'avgT', 'Ndep'), BYGROUP = F,
-                               nsim = 10,ngrid=10, 
+                               nsim = 100,ngrid=10, 
                                verbose = T)
 save(wstarPNX, file = "outputs/wstar_PNXoutput.RData")
 #load(file = "outputs/wstar_PNXoutput.RData")
