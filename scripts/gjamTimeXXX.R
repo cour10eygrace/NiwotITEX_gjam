@@ -186,10 +186,6 @@ priorList <- list(alphaSign = alphaSign,
                   formulaRho = as.formula(~depthcm+Ndep+avgT),
                   rhoPrior = rhoPrior)
 
-priorList <- list(alphaSign = alphaSign,
-                 formulaRho = as.formula(~ depthcm+ (1|groups)),
-                  rhoPrior = rhoPrior)
-
 tmp <- gjamTimePrior(xdata, ydata, edata, priorList)  
 
 #re set to -1 and 0 for lo and hi 
