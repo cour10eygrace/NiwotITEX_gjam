@@ -811,6 +811,279 @@ ggplot(postx, aes(x=log(intra_inter_res), fill=treat))+ geom_boxplot( )+
   #scale_fill_manual(values =specColor)+fct_reorder(
   xlab("Log Intra/Inter response competition")+ theme_classic()+ facet_wrap(~spp) 
 
+#BY SNOW----
+#CTL snow----
+load(file = "outputs/modDAtime_ctlsnowoutput.RData")
+alphas<-as.data.frame(modDAtime_ctlsnow$chains$alphaGibbs)
+names<-modDAtime_ctlsnow$parameters$alphaTable$`alpha_{to, from}`
+colnames(alphas)<-names
+
+#artsco
+artsco<-select(alphas, contains("ARTSCO"))
+artsco<-rowwise(artsco)%>%
+  mutate(inter_eff=(sum(c_across(`BISBIS, ARTSCO`:`RARESPP, ARTSCO`)))/8)%>%
+  mutate(inter_res=(sum(c_across(`ARTSCO, BISBIS`:`ARTSCO, RARESPP`)))/8)%>%
+  mutate(intra=`ARTSCO, ARTSCO`)%>%mutate(intra_inter_eff=intra/inter_eff, 
+                                          intra_inter_res=intra/inter_res)
+artsco_cie<-ci(log(artsco$intra_inter_eff), ci=c(0.95, 0.9, 0.85))
+artsco_cie$mu<-mean(log(artsco$intra_inter_eff)) 
+artsco_cie$spp<-"ARTSCO"
+
+artsco_cir<-ci(log(artsco$intra_inter_res), ci=c(0.95, 0.9, 0.85))
+artsco_cir$mu<-mean(log(artsco$intra_inter_res)) 
+artsco_cir$spp<-"ARTSCO"
+
+#carsco
+carsco<-select(alphas, contains("CARSCO"))
+carsco<-rowwise(carsco)%>%
+  mutate(inter1=sum(c_across(`ARTSCO, CARSCO`:`CALLEP, CARSCO`)))%>%
+  mutate(inter2=sum(c_across(`DESCAE, CARSCO`:`RARESPP, CARSCO`)))%>%
+  mutate(inter3=sum(c_across(`CARSCO, ARTSCO`:`CARSCO, CALLEP`)))%>%
+  mutate(inter4=sum(c_across(`CARSCO, DESCAE`:`CARSCO, RARESPP`)))%>%
+  mutate(inter_eff=(inter1+inter2)/8, inter_res=(inter3+inter4)/8)%>%
+  select(-inter1, -inter2, -inter3, -inter4)%>% mutate(intra=`CARSCO, CARSCO`)%>%
+  mutate(intra_inter_eff=intra/inter_eff, intra_inter_res=intra/inter_res)
+
+carsco_cie<-ci(log(carsco$intra_inter_eff), ci=c(0.95, 0.9, 0.85))
+carsco_cie$mu<-mean(log(carsco$intra_inter_eff)) 
+carsco_cie$spp<-"CARSCO"
+
+carsco_cir<-ci(log(carsco$intra_inter_res), ci=c(0.95, 0.9, 0.85))
+carsco_cir$mu<-mean(log(carsco$intra_inter_res)) 
+carsco_cir$spp<-"CARSCO"
+
+
+#descae 
+descae<-select(alphas, contains("DESCAE"))
+descae<-rowwise(descae)%>%
+  mutate(inter1=sum(c_across(`ARTSCO, DESCAE`:`CARSCO, DESCAE`)))%>%
+  mutate(inter2=sum(c_across(`GENALG, DESCAE`:`RARESPP, DESCAE`)))%>%
+  mutate(inter3=sum(c_across(`DESCAE, ARTSCO`:`DESCAE, CARSCO`)))%>%
+  mutate(inter4=sum(c_across(`DESCAE, GENALG`:`DESCAE, RARESPP`)))%>%
+  mutate(inter_eff=(inter1+inter2)/8, inter_res=(inter3+inter4)/8)%>%
+  select(-inter1, -inter2, -inter3, -inter4)%>% mutate(intra=`DESCAE, DESCAE`)%>%
+  mutate(intra_inter_eff=intra/inter_eff, intra_inter_res=intra/inter_res)
+
+descae_cie<-ci(log(descae$intra_inter_eff), ci=c(0.95, 0.9, 0.85))
+descae_cie$mu<-mean(log(descae$intra_inter_eff)) 
+descae_cie$spp<-"DESCAE"
+
+descae_cir<-ci(log(descae$intra_inter_res), ci=c(0.95, 0.9, 0.85))
+descae_cir$mu<-mean(log(descae$intra_inter_res)) 
+descae_cir$spp<-"DESCAE"
+
+#geum  
+geuros<-select(alphas, contains("GEUROS"))
+geuros<-rowwise(geuros)%>%
+  mutate(inter1=sum(c_across(`ARTSCO, GEUROS`:`GENALG, GEUROS`)))%>%
+  mutate(inter2=sum(c_across(`TRIPAR, GEUROS`:`RARESPP, GEUROS`)))%>%
+  mutate(inter3=sum(c_across(`GEUROS, ARTSCO`:`GEUROS, GENALG`)))%>%
+  mutate(inter4=sum(c_across(`GEUROS, TRIPAR`:`GEUROS, RARESPP`)))%>%
+  mutate(inter_eff=(inter1+inter2)/8, inter_res=(inter3+inter4)/8)%>%
+  select(-inter1, -inter2, -inter3, -inter4)%>% mutate(intra=`GEUROS, GEUROS`)%>%
+  mutate(intra_inter_eff=intra/inter_eff, intra_inter_res=intra/inter_res)
+
+geuros_cie<-ci(log(geuros$intra_inter_eff), ci=c(0.95, 0.9, 0.85))
+geuros_cie$mu<-mean(log(geuros$intra_inter_eff))
+geuros_cie$spp<-"GEUROS"
+
+geuros_cir<-ci(log(geuros$intra_inter_res),ci=c(0.95, 0.9, 0.85))
+geuros_cir$mu<-mean(log(geuros$intra_inter_res))
+geuros_cir$spp<-"GEUROS"
+
+#combine spp 
+alphas1e<-rbind(geuros_cie, artsco_cie, descae_cie, carsco_cie)
+alphas1e$treat<-"ctl"
+alphas1r<-rbind(geuros_cir, artsco_cir, descae_cir, carsco_cir)
+alphas1r$treat<-"ctl"
+
+artsco$spp<-"ARTSCO"
+descae$spp<-"DESCAE"
+geuros$spp<-"GEUROS"
+carsco$spp<-"CARSCO"
+
+post1<-select(artsco, inter_eff, inter_res, intra_inter_eff, intra_inter_res, spp)
+post2<-select(descae,inter_eff, inter_res, intra_inter_eff, intra_inter_res, spp)
+post3<-select(geuros, inter_eff, inter_res,intra_inter_eff, intra_inter_res, spp)
+post4<-select(carsco,inter_eff, inter_res, intra_inter_eff, intra_inter_res, spp)
+
+posta<-rbind(post1, post2, post3, post4)
+posta$treat<-"ctl"
+
+#effect
+Ctlsnowplot_eff<-ggplot(posta, aes(x=log(intra_inter_eff),..scaled.., fill=spp))+ geom_density(alpha=0.5)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+xlim(-4,2)+
+  xlab("Log Intra/Inter effect competition")+ theme_classic()+ 
+  ggtitle("Ambient snow")
+
+#response 
+ctlsnowplot_res<-ggplot(posta, aes(x=log(intra_inter_res),..scaled.., fill=spp))+ geom_density(alpha=0.5)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+xlim(-4,2)+
+  xlab("Log Intra/Inter response competition")+ theme_classic()+
+  theme(legend.position = "none")+
+  ggtitle("Ambient snow")
+
+
+#Snow add----
+load(file = "outputs/modDAtime_snowoutput.RData")
+alphas<-as.data.frame(modDAtime_snow$chains$alphaGibbs)
+names<-modDAtime_snow$parameters$alphaTable$`alpha_{to, from}`
+colnames(alphas)<-names
+
+#artsco
+artsco<-select(alphas, contains("ARTSCO"))
+artsco<-rowwise(artsco)%>%
+  mutate(inter_eff=(sum(c_across(`BISBIS, ARTSCO`:`RARESPP, ARTSCO`)))/8)%>%
+  mutate(inter_res=(sum(c_across(`ARTSCO, BISBIS`:`ARTSCO, RARESPP`)))/8)%>%
+  mutate(intra=`ARTSCO, ARTSCO`)%>%mutate(intra_inter_eff=intra/inter_eff, 
+                                          intra_inter_res=intra/inter_res)
+artsco_cie<-ci(log(artsco$intra_inter_eff), ci=c(0.95, 0.9, 0.85))
+artsco_cie$mu<-mean(log(artsco$intra_inter_eff)) 
+artsco_cie$spp<-"ARTSCO"
+
+artsco_cir<-ci(log(artsco$intra_inter_res), ci=c(0.95, 0.9, 0.85))
+artsco_cir$mu<-mean(log(artsco$intra_inter_res)) 
+artsco_cir$spp<-"ARTSCO"
+
+#carsco
+carsco<-select(alphas, contains("CARSCO"))
+carsco<-rowwise(carsco)%>%
+  mutate(inter1=sum(c_across(`ARTSCO, CARSCO`:`CALLEP, CARSCO`)))%>%
+  mutate(inter2=sum(c_across(`DESCAE, CARSCO`:`RARESPP, CARSCO`)))%>%
+  mutate(inter3=sum(c_across(`CARSCO, ARTSCO`:`CARSCO, CALLEP`)))%>%
+  mutate(inter4=sum(c_across(`CARSCO, DESCAE`:`CARSCO, RARESPP`)))%>%
+  mutate(inter_eff=(inter1+inter2)/8, inter_res=(inter3+inter4)/8)%>%
+  select(-inter1, -inter2, -inter3, -inter4)%>% mutate(intra=`CARSCO, CARSCO`)%>%
+  mutate(intra_inter_eff=intra/inter_eff, intra_inter_res=intra/inter_res)
+
+carsco_cie<-ci(log(carsco$intra_inter_eff), ci=c(0.95, 0.9, 0.85))
+carsco_cie$mu<-mean(log(carsco$intra_inter_eff)) 
+carsco_cie$spp<-"CARSCO"
+
+carsco_cir<-ci(log(carsco$intra_inter_res), ci=c(0.95, 0.9, 0.85))
+carsco_cir$mu<-mean(log(carsco$intra_inter_res)) 
+carsco_cir$spp<-"CARSCO"
+
+
+#descae 
+descae<-select(alphas, contains("DESCAE"))
+descae<-rowwise(descae)%>%
+  mutate(inter1=sum(c_across(`ARTSCO, DESCAE`:`CARSCO, DESCAE`)))%>%
+  mutate(inter2=sum(c_across(`GENALG, DESCAE`:`RARESPP, DESCAE`)))%>%
+  mutate(inter3=sum(c_across(`DESCAE, ARTSCO`:`DESCAE, CARSCO`)))%>%
+  mutate(inter4=sum(c_across(`DESCAE, GENALG`:`DESCAE, RARESPP`)))%>%
+  mutate(inter_eff=(inter1+inter2)/8, inter_res=(inter3+inter4)/8)%>%
+  select(-inter1, -inter2, -inter3, -inter4)%>% mutate(intra=`DESCAE, DESCAE`)%>%
+  mutate(intra_inter_eff=intra/inter_eff, intra_inter_res=intra/inter_res)
+
+descae_cie<-ci(log(descae$intra_inter_eff), ci=c(0.95, 0.9, 0.85))
+descae_cie$mu<-mean(log(descae$intra_inter_eff)) 
+descae_cie$spp<-"DESCAE"
+
+descae_cir<-ci(log(descae$intra_inter_res), ci=c(0.95, 0.9, 0.85))
+descae_cir$mu<-mean(log(descae$intra_inter_res)) 
+descae_cir$spp<-"DESCAE"
+
+#geum  
+geuros<-select(alphas, contains("GEUROS"))
+geuros<-rowwise(geuros)%>%
+  mutate(inter1=sum(c_across(`ARTSCO, GEUROS`:`GENALG, GEUROS`)))%>%
+  mutate(inter2=sum(c_across(`TRIPAR, GEUROS`:`RARESPP, GEUROS`)))%>%
+  mutate(inter3=sum(c_across(`GEUROS, ARTSCO`:`GEUROS, GENALG`)))%>%
+  mutate(inter4=sum(c_across(`GEUROS, TRIPAR`:`GEUROS, RARESPP`)))%>%
+  mutate(inter_eff=(inter1+inter2)/8, inter_res=(inter3+inter4)/8)%>%
+  select(-inter1, -inter2, -inter3, -inter4)%>% mutate(intra=`GEUROS, GEUROS`)%>%
+  mutate(intra_inter_eff=intra/inter_eff, intra_inter_res=intra/inter_res)
+
+geuros_cie<-ci(log(geuros$intra_inter_eff), ci=c(0.95, 0.9, 0.85))
+geuros_cie$mu<-mean(log(geuros$intra_inter_eff))
+geuros_cie$spp<-"GEUROS"
+
+geuros_cir<-ci(log(geuros$intra_inter_res),ci=c(0.95, 0.9, 0.85))
+geuros_cir$mu<-mean(log(geuros$intra_inter_res))
+geuros_cir$spp<-"GEUROS"
+
+#combine spp 
+alphas2e<-rbind(geuros_cie, artsco_cie, descae_cie, carsco_cie)
+alphas2e$treat<-"snow"
+alphas2r<-rbind(geuros_cir, artsco_cir, descae_cir, carsco_cir)
+alphas1r$treat<-"snow"
+
+artsco$spp<-"ARTSCO"
+descae$spp<-"DESCAE"
+geuros$spp<-"GEUROS"
+carsco$spp<-"CARSCO"
+
+post1<-select(artsco, inter_eff, inter_res,intra_inter_eff, intra_inter_res, spp)
+post2<-select(descae, inter_eff, inter_res,intra_inter_eff, intra_inter_res, spp)
+post3<-select(geuros, inter_eff, inter_res,intra_inter_eff, intra_inter_res, spp)
+post4<-select(carsco, inter_eff, inter_res,intra_inter_eff, intra_inter_res, spp)
+
+postb<-rbind(post1, post2, post3, post4)
+postb$treat<-"snowadd"
+
+#effect
+snowplot_eff<-ggplot(postb, aes(x=log(intra_inter_eff),..scaled.., fill=spp))+ geom_density(alpha=0.5)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+xlim(-4,2)+
+  xlab("Log Intra/Inter effect competition")+ theme_classic()+ 
+  ggtitle("Snow addition")
+
+#response 
+snowplot_res<-ggplot(postb, aes(x=log(intra_inter_res),..scaled.., fill=spp))+ geom_density(alpha=0.5)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+xlim(-4,2)+
+  xlab("Log Intra/Inter response competition")+ theme_classic()+
+  theme(legend.position = "none")+
+  ggtitle("Snow addition")
+
+
+#plot together 
+
+post<-rbind(posta, postb)
+
+ggplot(post, aes(x=inter_res, fill=treat))+ geom_density(alpha=0.3)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ #xlim (-3, 2)+
+  xlab("Log Intra/Inter response competition")+ theme_classic() + facet_wrap(~spp)
+
+ggplot(post, aes(x=inter_eff, fill=treat))+ geom_density(alpha=0.3)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ #xlim (-3, 2)+
+  xlab("Log Intra/Inter response competition")+ theme_classic() + facet_wrap(~spp)
+
+ggplot(post, aes(x=log(intra_inter_res), fill=treat))+ geom_density(alpha=0.3)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ xlim (-3, 2)+
+  xlab("Log Intra/Inter response competition")+ theme_classic() + facet_wrap(~spp)
+
+ggplot(post, aes(x=log(intra_inter_eff), fill=treat))+ geom_density( alpha=0.3)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ xlim (-3, 2)+
+  xlab("Log Intra/Inter effect competition")+ theme_classic()+ facet_wrap(~spp)
+
+ggplot(postx, aes(x=log(intra_inter_eff), fill=treat))+ geom_density( alpha=0.3)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ xlim (-3, 2)+
+  xlab("Log Intra/Inter effect competition")+ theme_classic()+ facet_wrap(~spp)
+
+ggplot(postx, aes(x=log(intra_inter_res), fill=treat))+ geom_density( alpha=0.3)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ xlim (-3, 2)+
+  xlab("Log Intra/Inter response competition")+ theme_classic()+ facet_wrap(~spp)
+
+ggplot(postx, aes(x=log(intra_inter_eff), fill=spp))+ geom_density( alpha=0.3)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ xlim (-3, 2)+
+  xlab("Log Intra/Inter effect competition")+ theme_classic()+ facet_wrap(~treat)
+
+ggplot(postx, aes(x=log(intra_inter_res), fill=spp))+ geom_density( alpha=0.3)+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ xlim (-3, 2)+
+  xlab("Log Intra/Inter response competition")+ theme_classic()+ facet_wrap(~treat)
+
+ggplot(postx, aes(x=log(intra_inter_res), fill=spp))+ geom_boxplot( )+
+  geom_vline(aes(xintercept=0), lty=2, color="red")+ xlim (-3, 2)+
+  xlab("Log Intra/Inter response competition")+ theme_classic()+ facet_wrap(~treat) 
+
+ggplot(postx, aes(x=spp, y=log(intra_inter_res), fill=treat))+ geom_boxplot( )+
+  geom_hline(aes(yintercept=0), lty=2, color="red")+ ylim (-3, 2)+
+  #scale_fill_manual(values =specColor)+fct_reorder(
+  xlab("Log Intra/Inter response competition")+ theme_classic()#+ facet_wrap(~spp) 
+
+
+
+
 #BY TIME----
 #early----
 load(file = "outputs/modDAtime_earlytrtoutput.RData")
