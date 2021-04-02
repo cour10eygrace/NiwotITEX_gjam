@@ -96,7 +96,7 @@ xdata<- mutate(xdata, year=year-2005)%>%
          Ndep =case_when(year==1~xdata_2006$Ndep, TRUE ~ as.numeric(Ndep)), 
          avgT=case_when(year==1~xdata_2006$avgT, TRUE ~ as.numeric(avgT)))
 
-#subset data for PNX plots
+#subset data for PNW plots
 plots<-subset(sppcomp, code=="PNW")  
 xdata<-filter(xdata, plot %in% plots$plot)
 ydata <- filter(spp_abundw,plot %in% plots$plot)%>%
@@ -108,8 +108,8 @@ ydata <- as.matrix(ydata)
 #make effort (edata) based on tot hits per plot year
 #plothits<-select(spp_abund%>%ungroup(), veg_hits, plotyear)%>%distinct(.)
 plothits<-separate(plothits, col = plotyear,into = "plot", sep = "_", remove=F)#ignore warning 
-plothits_PNX<-filter(plothits, plot %in% plots$plot)
-vals=plothits_PNX$veg_hits
+plothits_PNW<-filter(plothits, plot %in% plots$plot)
+vals=plothits_PNW$veg_hits
 edata <- matrix(vals, nrow = nrow(xdata), ncol = ncol(ydata))
 
 groups<-xdata$plot
