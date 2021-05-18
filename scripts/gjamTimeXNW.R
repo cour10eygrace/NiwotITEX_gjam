@@ -85,7 +85,11 @@ xdata_all<-full_join(xdata, enviro)
 
 
 #XNW----
-xdata<-select(xdata_all, plot, year, depth_cm, Ndep,avgT)
+#cumulative N 
+xdata<-select(xdata_all, plot, year, depth_cm, NdepCum,avgT)%>%
+  rename(Ndep=NdepCum)
+#not cumulative N 
+#xdata<-select(xdata_all, plot, year, depth_cm, Ndep,avgT)
 
 #pull out ctl values for year 1 
 xdata_2006<-filter(xdata, year==2006&plot==4)
@@ -171,7 +175,7 @@ rhoPrior  <- list(lo = list(intercept = -0.5, depthcm = -0.5,
                             Ndep = 0.5, avgT= 0.5)) 
 
 priorList <- list(alphaSign = alphaSign,
-                  formulaRho = as.formula(~depthcm+Ndep+avgT),
+                  formulaRho = as.formula(~depthcm+(Ndep^2)+avgT),
                   rhoPrior = rhoPrior
 )
 
@@ -214,7 +218,7 @@ specColor <- c(
 #plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
 plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
                  outFolder = 'plots/modDAtime_XNWplots')
-gjamPlot(modDAtimeXNW, plotPars)
+gjamPlot(modDAtimeXNW, plotPars1)
 
 #posterior_vs_prior(modDAtime)#how to plot this???
 

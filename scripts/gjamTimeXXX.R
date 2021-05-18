@@ -197,7 +197,6 @@ modelList <- list(
 )
 
 modDAtimeXXX<- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, modelList = modelList)
-#modDAtimeXXX_int<- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, modelList = modelList)
 
 # save output
 save(modDAtimeXXX, file = "outputs/modDAtime_XXXoutput.RData")
@@ -217,10 +216,9 @@ specColor <- c(
 #plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
 plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
                  outFolder = 'plots/modDAtime_XXXplots')
-gjamPlot(modDAtimeXXX, plotPars1)
+gjamPlot(modDAtimeXXX, plotPars)
 
-
-#posterior_vs_prior(modDAtime)#how to plot this???
+#posterior_vs_prior(modDAtime)#how to plot these???
 
 #spp alphas
 alphaX<-modDAtimeXXX$parameters$alphaMu
