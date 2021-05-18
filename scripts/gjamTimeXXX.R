@@ -77,7 +77,6 @@ spp_abundw<-select(spp_abundw, ARTSCO, BISBIS, CALLEP, CARSCO, DESCAE,
 #                   GENALG,GEUROS, RARESPP)
 
 
-
 # doesn't like underscores in spp names
 names(spp_abundw)
 
@@ -165,9 +164,7 @@ xdata$year<-NULL
 #does not like underscores 
 xdata<-rename(xdata, depthcm=depth_cm)
 
-#subset xdata for only Ndep to try to fix singular matrix issue  
-#xdata<-select(xdata, -depth_cm, -avgT, -plot, -year)
-
+#alpha priors 
 alphaSign <- matrix(-1, ncol(ydata), ncol(ydata)) # set as competitors
 colnames(alphaSign) <- rownames(alphaSign) <- colnames(ydata)
 
@@ -178,10 +175,6 @@ rhoPrior  <- list(lo = list(intercept = -0.5, depthcm = -0.5,
                               Ndep = -0.5, avgT= -0.5), 
                   hi = list(intercept = 0.5, depthcm = 0.5, 
                               Ndep = 0.5, avgT= 0.5)) 
-
-rhoPrior  <- list(lo = list(intercept = -0.5), 
-                 hi = list(intercept = 0.5)) 
-
 priorList <- list(alphaSign = alphaSign,
                   formulaRho = as.formula(~depthcm+Ndep+avgT),
                   rhoPrior = rhoPrior)
