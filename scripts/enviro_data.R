@@ -1,3 +1,6 @@
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 #enviro data----
 #only need to run the rest if changing/updating environmental Rdata 12/15/20
 #N->Nat'l atmospheric deposition program seasonal averages 
@@ -12,7 +15,7 @@
 
 
 #Munge N data 
-Ndep<-read.csv("C:/Users/court/Google Drive/CU Postdoc/LTREB/data/NTN-CO02-s.csv") 
+Ndep<-read.csv("data/raw_env/NTN-CO02-s.csv") 
 
 #use Summer (Jun-Aug) Ndep values from NADP as baseline and add constants from Farrer 2014 GCB 
 #Nitrogen was added as osmocote slow release fertilizer at a rate of 28 g N/m2/yr from 2006 to 2010 
@@ -31,6 +34,16 @@ Ndep[15,5]<-((Ndep[1,5]+Ndep[2,5])/2)#use average of two lowest values (2010, 20
 Ndep[15,6]<-Ndep[15,5]+5 #add 5 for N treatment 
 Ndep<-rename(Ndep, X=totN, N=Nadd)%>%pivot_longer(cols=c("X", "N"),names_to = "N", values_to = "Ndep")%>%
   select(year, N, Ndep)
+
+#allow cumulative build up !0% from each previous year accumulates plus new addition
+Ndep<-mutate(Ndep, time=year-2006)%>%
+  mutate(NdepCum1=case_when(N=="N"&time<5~time*(Ndep*0.1), TRUE~0))%>%
+  mutate(NdepCum2=case_when(N=="N"&time>4~sum(NdepCum1)+time*(Ndep*0.1), 
+                            TRUE~0))%>%
+  mutate(NdepCum= Ndep + NdepCum1+NdepCum2)%>%
+  select(year, N, Ndep, NdepCum)
+
+plot(Ndep$NdepCum~Ndep$year)#looks good-saturating 
 
 #Munge temp data 
 temp<-read.csv("C:/Users/court/Google Drive/CU Postdoc/LTREB/data/sdlcr23x-cr1000.daily.ml.data.csv")
@@ -64,8 +77,8 @@ temp$W<-temp$avgT+1 #warming chambers increase 1 deg C
 temp<-rename(temp, X=avgT)%>%pivot_longer(cols=c("X", "W"),names_to = "temp", values_to = "avgT")
 
 #Munge Snow data 
-snowdat<-read.csv("C:/Users/court/Google Drive/CU Postdoc/LTREB/data/NWT_ITEX_snowdepth_CC.csv")#CC swapped 2011 treatment codes for April 12/15/20
-sadsnow<-read.csv("C:/Users/court/Google Drive/CU Postdoc/Saddle Grid/saddle_snow/saddsnow.dw.data.csv")
+snowdat<-read.csv("data/raw_env/NWT_ITEX_snowdepth_CC.csv")#CC swapped 2011 treatment codes for April 12/15/20
+sadsnow<-read.csv("data/raw_env/saddsnow.dw.data.csv")
 
 #Remove unclear measurements and NAs  
 #999 means snow too hard to probe/unsure of ground vs. hard layer
@@ -110,6 +123,12 @@ snow_all<-select(snow_all, -day, -date, -notes, -snowfence)%>%distinct(.)
 check<-group_by(snow_all, year, block, snow_trt)%>%count()%>%group_by(year)%>%
   mutate(tot=sum(n))
 
+#full plot x years x treat df 
+sppcomp <- read.csv("data/NWT_ITEX_SpComp_data_L1.csv")
+sppcomp<-filter(sppcomp, !is.na(year))#remove spaces 
+sppcomp<-rename(sppcomp, spp=JGS_code)%>%unite(., plotyear, plot, year, remove=F)
+plotyears<-select(sppcomp, year, plot, snow, N, temp, block)%>%distinct(.)
+
 snowyears<-select(plotyears, year, block, snow)%>%distinct(.)#full years
 snowyears<-subset(snowyears, year<2009|year>2016)#missing years
 snow_miss<-filter(snow_all, is.na(LTER_site))%>%mutate(year=as.integer(year))%>%select(-block)
@@ -150,7 +169,8 @@ snow_allXX<-mutate(snow_allXX, depth_cm=ifelse(is.na(depth_cm), depth_cm2, depth
 
 #add infilling info 
 snow_allXX<-select(snow_allXX, -keep)%>%mutate(infill=ifelse(depth_cm==depth_cm2, 1, 0))
-write.csv(snow_allXX, "C:/Users/court/Google Drive/CU Postdoc/LTREB/data/infilled_snow_data.csv")
+#write.csv(snow_allXX, "data/infilled_snow_data.csv")
+
 #plot 
 ggplot(data=snow_allXX, aes(x=as.factor(year), y=depth_cm, fill=snow_trt))+ 
   geom_boxplot()#looks OK
@@ -173,15 +193,21 @@ snowmn<-mean(enviro$depth_cm)
 snowsd<-sd(enviro$depth_cm)
 Nmn<-mean(enviro$Ndep)
 Nsd<-sd(enviro$Ndep) 
+Ncmn<-mean(enviro$NdepCum)
+Ncsd<-sd(enviro$NdepCum) 
 tempmn<-mean(enviro$avgT)
 tempsd<-sd(enviro$avgT)
 
 enviro$depth_cm<-((enviro$depth_cm-snowmn)/snowsd)
-hist(enviro$depth_cm)
-enviro$Ndep<-((enviro$Ndep-Nmn)/Nsd)
-hist(enviro$Ndep)
-enviro$avgT<-((enviro$avgT-tempmn)/tempsd)
-hist(enviro$avgT)
+hist(enviro$depth_cm)#looks ok 
 
-save(enviro, file="C:/Users/court/Google Drive/CU Postdoc/LTREB/data/Enviro.Rdata")
+enviro$Ndep<-((enviro$Ndep-Nmn)/Nsd)
+hist(enviro$Ndep)#not normally distributed 
+enviro$NdepCum<-((enviro$NdepCum-Ncmn)/Ncsd)
+hist(enviro$NdepCum)#not normally distributed
+
+enviro$avgT<-((enviro$avgT-tempmn)/tempsd)
+hist(enviro$avgT)#looks ok 
+
+#save(enviro, file="data/Enviro.Rdata")
 
