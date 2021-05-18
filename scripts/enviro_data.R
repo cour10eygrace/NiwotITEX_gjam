@@ -35,15 +35,15 @@ Ndep[15,6]<-Ndep[15,5]+5 #add 5 for N treatment
 Ndep<-rename(Ndep, X=totN, N=Nadd)%>%pivot_longer(cols=c("X", "N"),names_to = "N", values_to = "Ndep")%>%
   select(year, N, Ndep)
 
-#allow cumulative build up !0% from each previous year accumulates plus new addition
+#allow cumulative build up 10% from each previous year accumulates plus new addition
+#for N addition plots only 
 Ndep<-mutate(Ndep, time=year-2006)%>%
   mutate(NdepCum1=case_when(N=="N"&time<5~time*(Ndep*0.1), TRUE~0))%>%
-  mutate(NdepCum2=case_when(N=="N"&time>4~sum(NdepCum1)+time*(Ndep*0.1), 
-                            TRUE~0))%>%
+  mutate(NdepCum2=case_when(N=="N"&time>4~sum(NdepCum1)+time*(Ndep*0.1), TRUE~0))%>%
   mutate(NdepCum= Ndep + NdepCum1+NdepCum2)%>%
   select(year, N, Ndep, NdepCum)
 
-plot(Ndep$NdepCum~Ndep$year)#looks good-saturating 
+plot(Ndep$NdepCum~Ndep$year)#looks good-saturating for N addition plots 
 
 #Munge temp data 
 temp<-read.csv("C:/Users/court/Google Drive/CU Postdoc/LTREB/data/sdlcr23x-cr1000.daily.ml.data.csv")
@@ -197,17 +197,14 @@ Ncmn<-mean(enviro$NdepCum)
 Ncsd<-sd(enviro$NdepCum) 
 tempmn<-mean(enviro$avgT)
 tempsd<-sd(enviro$avgT)
-
 enviro$depth_cm<-((enviro$depth_cm-snowmn)/snowsd)
-hist(enviro$depth_cm)#looks ok 
-
+hist(enviro$depth_cm)
 enviro$Ndep<-((enviro$Ndep-Nmn)/Nsd)
-hist(enviro$Ndep)#not normally distributed 
+hist(enviro$Ndep)
 enviro$NdepCum<-((enviro$NdepCum-Ncmn)/Ncsd)
-hist(enviro$NdepCum)#not normally distributed
-
+hist(enviro$NdepCum)
 enviro$avgT<-((enviro$avgT-tempmn)/tempsd)
-hist(enviro$avgT)#looks ok 
+hist(enviro$avgT)
 
-#save(enviro, file="data/Enviro.Rdata")
+save(enviro, file="data/Enviro.Rdata")
 
