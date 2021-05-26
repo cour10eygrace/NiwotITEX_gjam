@@ -46,8 +46,8 @@ Ndep<-mutate(Ndep, time=year-2006)%>%
 plot(Ndep$NdepCum~Ndep$year)#looks good-saturating for N addition plots 
 
 #Munge temp data 
-temp<-read.csv("C:/Users/court/Google Drive/CU Postdoc/LTREB/data/sdlcr23x-cr1000.daily.ml.data.csv")
-temp2<-read.csv("C:/Users/court/Google Drive/CU Postdoc/LTREB/data/sdl_cr1000_tenmin.csv")#2020 data from ftp
+temp<-read.csv("data/raw_env/sdlcr23x-cr1000.daily.ml.data.csv")
+temp2<-read.csv("data/raw_env/sdl_cr1000_tenmin.csv")#2020 data from ftp
 
 #use June-August temp 
 temp<-separate(temp, col = date, into = c("month", "day","year"), sep = "/", remove = F)%>%
@@ -186,25 +186,26 @@ snow_allXX<-select(snow_allXX, -depth_cm2, -avg_depth, -ct, -local_site, -LTER_s
 enviro<-left_join(snow_allXX, Ndep)
 enviro<-left_join(enviro, temp)%>%distinct(.)
 
-
-#mean center data- do beforehand so not normalized on different years/plots
-#improves indirect spp x enviro estimates 
-snowmn<-mean(enviro$depth_cm)
-snowsd<-sd(enviro$depth_cm)
-Nmn<-mean(enviro$Ndep)
-Nsd<-sd(enviro$Ndep) 
-Ncmn<-mean(enviro$NdepCum)
-Ncsd<-sd(enviro$NdepCum) 
-tempmn<-mean(enviro$avgT)
-tempsd<-sd(enviro$avgT)
-enviro$depth_cm<-((enviro$depth_cm-snowmn)/snowsd)
-hist(enviro$depth_cm)
-enviro$Ndep<-((enviro$Ndep-Nmn)/Nsd)
-hist(enviro$Ndep)
-enviro$NdepCum<-((enviro$NdepCum-Ncmn)/Ncsd)
-hist(enviro$NdepCum)
-enviro$avgT<-((enviro$avgT-tempmn)/tempsd)
-hist(enviro$avgT)
-
 save(enviro, file="data/Enviro.Rdata")
+
+#mean center data- don;t need to do beforehand bc model will do so 
+#improves indirect spp x enviro estimates 
+#snowmn<-mean(enviro$depth_cm)
+#snowsd<-sd(enviro$depth_cm)
+#Nmn<-mean(enviro$Ndep)
+#Nsd<-sd(enviro$Ndep) 
+#Ncmn<-mean(enviro$NdepCum)
+#Ncsd<-sd(enviro$NdepCum) 
+#tempmn<-mean(enviro$avgT)
+#tempsd<-sd(enviro$avgT)
+#enviro$depth_cm<-((enviro$depth_cm-snowmn)/snowsd)
+#hist(enviro$depth_cm)
+#enviro$Ndep<-((enviro$Ndep-Nmn)/Nsd)
+#hist(enviro$Ndep)
+#enviro$NdepCum<-((enviro$NdepCum-Ncmn)/Ncsd)
+#hist(enviro$NdepCum)
+#enviro$avgT<-((enviro$avgT-tempmn)/tempsd)
+#hist(enviro$avgT)
+
+#save(enviro, file="data/Enviro.Rdata")
 
