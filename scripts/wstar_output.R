@@ -43,6 +43,7 @@ ggplot(wstarxxx, aes(x=as.factor(Ndep), y=mu, col=spp)) +geom_boxplot()+
 ggplot(wstarxxx, aes(x=avgT, y=mu, col=spp)) +geom_smooth()+
   #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
   facet_wrap(~spp, scales ="free")
+
 ggplot(wstarxxx, aes(x=as.factor(avgT), y=mu, col=spp)) +geom_boxplot()+
   #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
   facet_wrap(~spp, scales ="free")
@@ -541,11 +542,21 @@ wstarpxx<-cbind(wstarpxx, env)
 #plot raw data-don't know how to get sds in there 
 ggplot(wstarpxx, aes(x=depthcm, y=mu, col=spp)) +geom_smooth()+
   #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
-  facet_wrap(~spp, scales ="free")
+  facet_wrap(~spp, scales ="free")+
+  theme_classic()+ylab("mu equilibrium abundance")+
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ xlab("snow depth PXX")+
+  theme(legend.position = "none")
+
+
 
 ggplot(wstarpxx, aes(x=Ndep, y=mu, col=spp)) +geom_smooth()+
   #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
-  facet_wrap(~spp, scales ="free")
+  facet_wrap(~spp, scales ="free")+
+  theme_classic()+ylab("mu equilibrium abundance")+ 
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ xlab("N dep PXX")+
+  theme(legend.position = "none")
+
+
 
 ggplot(wstarpxx, aes(x=avgT, y=mu, col=spp)) +geom_smooth()+
   #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
@@ -678,8 +689,10 @@ ggplot(wstarpxw, aes(x=Ndep, y=mu, col=spp)) +geom_smooth()+
   facet_wrap(~spp, scales ="free")
 
 ggplot(wstarpxw, aes(x=avgT, y=mu, col=spp)) +geom_smooth()+
-  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
-  facet_wrap(~spp, scales ="free")
+#geom_ribbon(aes(ymin=mu-sd, ymax=mu+sd), 
+# fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ xlab("avgT PXW")+
+  ylab("mu equilibrium abundance")+ theme(legend.position = "none")
 
 #fit mods 
 library(mgcv)
@@ -1027,7 +1040,7 @@ summary(fit_modNdeppnw_descNL)#sig linear pos
 
 
 #model summaries---- 
-#load(file="outputs/wstarNL/mod_wstar_snowpnx.RData")
+load(file="outputs/wstarNL/mod_wstar_snowxnw.RData")
 #snow
 summary(fit_modsnowpxx_descNL)#significant smoothing term 
 summary(fit_modsnowxnx_descNL)#sig linear (already in rho) and smoothing term 
@@ -1042,11 +1055,12 @@ summary(fit_modsnowxxw_carscoNL)#sig smoothing term
 #PXW, PNW, snow nothing significant
 
 #temp
-load(file="outputs/wstarNL/mod_wstar_temppnw.RData")
+#load(file="outputs/wstarNL/mod_wstar_temppxw.RData")
 
 summary(fit_modtempxxw_carscoNL)#significant smoothing term
 summary(fit_modtempxnx_descNL)#significant smoothing term-not clear in graph
 summary(fit_modtemppxw_triparNL) #sig smoothing term 
+summary(fit_modtemppxw_descNL) #sig smoothing term 
 
 #XXW-1, XNX-1, PXW-1
 #XXX, PXX, PNX, XNW?, PNW temp nothing significant 
@@ -1066,3 +1080,34 @@ summary(fit_modNdeppnw_descNL)#sig linear pos (NOT SIG FOR RHO)
 #XXW-1, XNX-1, PXX-2, PNX-2, XNW-1, PNW-1
 #XXX,PXW Ndep nothing significant 
 
+#deschampsia all----
+descxxx<-subset(wstarxxx, spp=="DESCAE")%>%
+  mutate(treat="XXX")
+descxxw<-subset(wstarxxw, spp=="DESCAE")%>%
+  mutate(treat="XXW")
+descxnx<-subset(wstarxnx, spp=="DESCAE")%>%
+  mutate(treat="XNX")
+descpxx<-subset(wstarpxx, spp=="DESCAE")%>%
+  mutate(treat="PXX")
+descpnx<-subset(wstarpnx, spp=="DESCAE")%>%
+  mutate(treat="PNX")
+descpxw<-subset(wstarpxw, spp=="DESCAE")%>%
+  mutate(treat="PXW")
+descxnw<-subset(wstarxnw, spp=="DESCAE")%>%
+  mutate(treat="XNW")
+descpnw<-subset(wstarpnw, spp=="DESCAE")%>%
+  mutate(treat="PNW")
+desc_wstar<-rbind(descxxx, descxxw, descxnx, descpxx, 
+                  descpnx, descxnw, descpxw, descpnw )
+
+ggplot(desc_wstar, aes(x=avgT, y=mu, col=treat)) +
+geom_smooth()+ylab("mu equilibrium abundance")+
+  theme_classic()
+
+ggplot(desc_wstar, aes(x=depthcm, y=mu, col=treat)) +
+  geom_smooth()+ylab("mu equilibrium abundance")+
+  theme_classic()
+
+ggplot(desc_wstar, aes(x=Ndep, y=mu, col=treat)) +
+  geom_smooth()+ylab("mu equilibrium abundance")+
+  theme_classic()

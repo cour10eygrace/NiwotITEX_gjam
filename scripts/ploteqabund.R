@@ -25,6 +25,7 @@
   return( c(6,6) )
 }
 
+#dotted line=mean, dark shade=68.2%, light shade=95% CI
 
 .shadeInterval <- function(xvalues,loHi,col='grey',PLOT  = TRUE, add  = TRUE,
                            xlab=' ',ylab=' ', xlim = NULL, ylim = NULL, 
