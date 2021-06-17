@@ -5,6 +5,7 @@ library(tidyr)
 library(ggpubr)
 
 #rhos---- 
+#Deschampsia 
 #XXX
 load(file = "outputs/modDAtime_XXXoutput.RData")
 rhosXXX<-as.data.frame(modDAtimeXXX$chains$lgibbs)
@@ -61,6 +62,13 @@ ggplot(rhosall, aes(y=DESCAE_depthcm, fill=treat))+ geom_boxplot( )+
   xlab(" ")+ theme(axis.text.x=element_blank(),
                    axis.ticks.x=element_blank())
 
+ggplot(rhosall, aes(y=DESCAE_depthcm, color=warm, fill=snow, shape=N))+ geom_boxplot( )+
+  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
+  theme_classic()+ ylab("Effect of snow depth")+ 
+  xlab(" ")+ theme(axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())
+
+
 ggplot(rhosall, aes(y=DESCAE_Ndep, fill=treat))+ geom_boxplot( )+
   geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
   theme_classic()+ ylab("Effect of N deposition")+
@@ -72,8 +80,148 @@ ggplot(rhosall, aes(y=DESCAE_avgT, fill=treat))+ geom_boxplot( )+
   theme_classic()+ ylab("Effect of temperature")+
   xlab(" ")+ theme(axis.text.x=element_blank(),
                    axis.ticks.x=element_blank())
+#Geum 
 
-#a-priori contrasts---- 
+#XXX
+load(file = "outputs/modDAtime_XXXoutput.RData")
+rhosXXX<-as.data.frame(modDAtimeXXX$chains$lgibbs)
+rhosXXX<-select(rhosXXX, matches("GEUROS"))
+rhosXXX$treat<-"XXX"
+
+#XXW
+load(file = "outputs/modDAtime_XXWoutput.RData")
+rhosXXW<-as.data.frame(modDAtimeXXW$chains$lgibbs)
+rhosXXW<-select(rhosXXW, matches("GEUROS"))
+rhosXXW$treat<-"XXW"
+
+#PXX
+load(file = "outputs/modDAtime_PXXoutput.RData")
+rhosPXX<-as.data.frame(modDAtimePXX$chains$lgibbs)
+rhosPXX<-select(rhosPXX, matches("GEUROS"))
+rhosPXX$treat<-"PXX"
+
+#XNX
+load(file = "outputs/modDAtime_XNXoutput.RData")
+rhosXNX<-as.data.frame(modDAtimeXNX$chains$lgibbs)
+rhosXNX<-select(rhosXNX, matches("GEUROS"))
+rhosXNX$treat<-"XNX"
+
+#PNX
+load(file = "outputs/modDAtime_PNXoutput.RData")
+rhosPNX<-as.data.frame(modDAtimePNX$chains$lgibbs)
+rhosPNX<-select(rhosPNX, matches("GEUROS"))
+rhosPNX$treat<-"PNX"
+
+#XNW
+load(file = "outputs/modDAtime_XNWoutput.RData")
+rhosXNW<-as.data.frame(modDAtimeXNW$chains$lgibbs)
+rhosXNW<-select(rhosXNW, matches("GEUROS"))
+rhosXNW$treat<-"XNW"
+
+#PXW
+load(file = "outputs/modDAtime_PXWoutput.RData")
+rhosPXW<-as.data.frame(modDAtimePXW$chains$lgibbs)
+rhosPXW<-select(rhosPXW, matches("GEUROS"))
+rhosPXW$treat<-"PXW"
+
+#PNW
+load(file = "outputs/modDAtime_PNWoutput.RData")
+rhosPNW<-as.data.frame(modDAtimePNW$chains$lgibbs)
+rhosPNW<-select(rhosPNW, matches("GEUROS"))
+rhosPNW$treat<-"PNW"
+
+#plot all 
+rhosall<-rbind(rhosXXX, rhosXXW, rhosPXX, rhosXNX, rhosPNX,  rhosXNW, rhosPXW, rhosPNW)
+ggplot(rhosall, aes(y=GEUROS_depthcm, fill=treat))+ geom_boxplot( )+
+  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
+  theme_classic()+ ylab("Effect of snow depth")+ 
+  xlab(" ")+ theme(axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())
+
+ggplot(rhosall, aes(y=GEUROS_Ndep, fill=treat))+ geom_boxplot( )+
+  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
+  theme_classic()+ ylab("Effect of N deposition")+
+  xlab(" ")+ theme(axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())
+
+ggplot(rhosall, aes(y=GEUROS_avgT, fill=treat))+ geom_boxplot( )+
+  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
+  theme_classic()+ ylab("Effect of temperature")+
+  xlab(" ")+ theme(axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())
+
+#Artemisia 
+
+#XXX
+load(file = "outputs/modDAtime_XXXoutput.RData")
+rhosXXX<-as.data.frame(modDAtimeXXX$chains$lgibbs)
+rhosXXX<-select(rhosXXX, matches("ARTSCO"))
+rhosXXX$treat<-"XXX"
+
+#XXW
+load(file = "outputs/modDAtime_XXWoutput.RData")
+rhosXXW<-as.data.frame(modDAtimeXXW$chains$lgibbs)
+rhosXXW<-select(rhosXXW, matches("ARTSCO"))
+rhosXXW$treat<-"XXW"
+
+#PXX
+load(file = "outputs/modDAtime_PXXoutput.RData")
+rhosPXX<-as.data.frame(modDAtimePXX$chains$lgibbs)
+rhosPXX<-select(rhosPXX, matches("ARTSCO"))
+rhosPXX$treat<-"PXX"
+
+#XNX
+load(file = "outputs/modDAtime_XNXoutput.RData")
+rhosXNX<-as.data.frame(modDAtimeXNX$chains$lgibbs)
+rhosXNX<-select(rhosXNX, matches("ARTSCO"))
+rhosXNX$treat<-"XNX"
+
+#PNX
+load(file = "outputs/modDAtime_PNXoutput.RData")
+rhosPNX<-as.data.frame(modDAtimePNX$chains$lgibbs)
+rhosPNX<-select(rhosPNX, matches("ARTSCO"))
+rhosPNX$treat<-"PNX"
+
+#XNW
+load(file = "outputs/modDAtime_XNWoutput.RData")
+rhosXNW<-as.data.frame(modDAtimeXNW$chains$lgibbs)
+rhosXNW<-select(rhosXNW, matches("ARTSCO"))
+rhosXNW$treat<-"XNW"
+
+#PXW
+load(file = "outputs/modDAtime_PXWoutput.RData")
+rhosPXW<-as.data.frame(modDAtimePXW$chains$lgibbs)
+rhosPXW<-select(rhosPXW, matches("ARTSCO"))
+rhosPXW$treat<-"PXW"
+
+#PNW
+load(file = "outputs/modDAtime_PNWoutput.RData")
+rhosPNW<-as.data.frame(modDAtimePNW$chains$lgibbs)
+rhosPNW<-select(rhosPNW, matches("ARTSCO"))
+rhosPNW$treat<-"PNW"
+
+#plot all 
+rhosall<-rbind(rhosXXX, rhosXXW, rhosPXX, rhosXNX, rhosPNX,  rhosXNW, rhosPXW, rhosPNW)
+ggplot(rhosall, aes(y=ARTSCO_depthcm, fill=treat))+ geom_boxplot( )+
+  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
+  theme_classic()+ ylab("Effect of snow depth")+ 
+  xlab(" ")+ theme(axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())
+
+ggplot(rhosall, aes(y=ARTSCO_Ndep, fill=treat))+ geom_boxplot( )+
+  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
+  theme_classic()+ ylab("Effect of N deposition")+
+  xlab(" ")+ theme(axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())
+
+ggplot(rhosall, aes(y=ARTSCO_avgT, fill=treat))+ geom_boxplot( )+
+  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
+  theme_classic()+ ylab("Effect of temperature")+
+  xlab(" ")+ theme(axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())
+
+
+#a-priori contrasts---- NOT USING
 #XXW vs XXX----
 deltarho_snow_XXW_XXX<-as.data.frame(
   rhosXXW$DESCAE_depthcm-rhosXXX$DESCAE_depthcm)
@@ -430,4 +578,111 @@ ggplot(alphasall, aes(y=(inter_res+inter_eff)/2, fill=treat))+ geom_boxplot( )+
   xlab(" ")+ theme(axis.text.x=element_blank(),
                    axis.ticks.x=element_blank())
 
+#apriori contrasts----
 
+#Deschampsia competition was more neutral (delta positive) with N 
+#addition *except* under all 3 (PNW)
+#and as 2 or more factors were manipulated, Deschampsia competition 
+#with Geum got stronger 
+
+#XXX vs XNX----
+load(file = "outputs/modDAtime_XXXoutput.RData")
+alphasXXX<-as.data.frame(modDAtimeXXX$parameters$alphaMu)
+
+load(file = "outputs/modDAtime_XNXoutput.RData")
+alphasXNX<-as.data.frame(modDAtimeXNX$parameters$alphaMu)
+
+delta_alpha_XNX_XXX<-as.matrix(alphasXNX-alphasXXX)
+
+pdf(file="plots/modDAtime_XNXplots/delta_alpha_plot.pdf")
+corrplot(delta_alpha_XNX_XXX ,method = "color", 
+         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+         number.cex = 0.75, diag =T, main="delta alphas XNX-XXX", is.corr = FALSE, 
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+dev.off()
+
+#XXX vs XXW----
+load(file = "outputs/modDAtime_XXWoutput.RData")
+alphasXXW<-as.data.frame(modDAtimeXXW$parameters$alphaMu)
+
+delta_alpha_XXW_XXX<-as.matrix(alphasXXW-alphasXXX)
+
+pdf(file="plots/modDAtime_XXWplots/delta_alpha_plot.pdf")
+corrplot(delta_alpha_XXW_XXX ,method = "color", 
+         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+         number.cex = 0.75, diag =T, main="delta alphas XXW-XXX", is.corr = FALSE, 
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+dev.off()
+
+#warming increases competition compared to control 
+
+#XXX vs PXX----
+load(file = "outputs/modDAtime_PXXoutput.RData")
+alphasPXX<-as.data.frame(modDAtimePXX$parameters$alphaMu)
+
+delta_alpha_PXX_XXX<-as.matrix(alphasPXX-alphasXXX)
+
+pdf(file="plots/modDAtime_PXXplots/delta_alpha_plot.pdf")
+corrplot(delta_alpha_PXX_XXX ,method = "color", 
+         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+         number.cex = 0.75, diag =T, main="delta alphas PXX-XXX", is.corr = FALSE, 
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+dev.off()
+#snow addition increases and decreases competition compared to control 
+
+#XXX vs XNW----
+load(file = "outputs/modDAtime_XNWoutput.RData")
+alphasXNW<-as.data.frame(modDAtimeXNW$parameters$alphaMu)
+
+delta_alpha_XNW_XXX<-as.matrix(alphasXNW-alphasXXX)
+
+pdf(file="plots/modDAtime_XNWplots/delta_alpha_plot.pdf")
+corrplot(delta_alpha_XNW_XXX ,method = "color", 
+         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+         number.cex = 0.75, diag =T, main="delta alphas XNW-XXX", is.corr = FALSE, 
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+dev.off()
+
+#XXX vs PNX----
+load(file = "outputs/modDAtime_PNXoutput.RData")
+alphasPNX<-as.data.frame(modDAtimePNX$parameters$alphaMu)
+
+delta_alpha_PNX_XXX<-as.matrix(alphasPNX-alphasXXX)
+
+pdf(file="plots/modDAtime_PNXplots/delta_alpha_plot.pdf")
+corrplot(delta_alpha_PNX_XXX ,method = "color", 
+         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+         number.cex = 0.75, diag =T, main="delta alphas PNX-XXX", is.corr = FALSE, 
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+dev.off()
+#a lot changes here
+#deschampsia weaker comp with many spp, stronger competition with geum
+
+#XXX vs PXW----
+load(file = "outputs/modDAtime_PXWoutput.RData")
+alphasPXW<-as.data.frame(modDAtimePXW$parameters$alphaMu)
+
+delta_alpha_PXW_XXX<-as.matrix(alphasPXW-alphasXXX)
+
+pdf(file="plots/modDAtime_PXWplots/delta_alpha_plot.pdf")
+corrplot(delta_alpha_PXW_XXX ,method = "color", 
+         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+         number.cex = 0.75, diag =T, main="delta alphas PXW-XXX", is.corr = FALSE, 
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+dev.off()
+
+#deschampsia stronger competittion with geum
+#XXX vs PNW----
+load(file = "outputs/modDAtime_PNWoutput.RData")
+alphasPNW<-as.data.frame(modDAtimePNW$parameters$alphaMu)
+
+delta_alpha_PNW_XXX<-as.matrix(alphasPNW-alphasXXX)
+
+pdf(file="plots/modDAtime_PNWplots/delta_alpha_plot.pdf")
+corrplot(delta_alpha_PNW_XXX ,method = "color", 
+         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+         number.cex = 0.75, diag =T, main="delta alphas PNW-XXX", is.corr = FALSE, 
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+dev.off()
+
+#deschampsia stronger competition with geum
