@@ -169,9 +169,9 @@ colnames(alphaSign) <- rownames(alphaSign) <- colnames(ydata)
 # rhoPrior is a list indicating lo and hi values for the growth rate, which is change per time increment.
 # In this example, growth rate rho only includes an intercept, because I included no predictors (Q = 0).
 # The density-independent growth rate is given a wide prior values of ±30% per time increment:
-rhoPrior  <- list(lo = list(intercept = -0.5, depthcm = -0.5, 
+rhoPrior  <- list(lo = list(intercept = -1, depthcm = -0.5, 
                             Ndep = -0.5, avgT= -0.5), 
-                  hi = list(intercept = 0.5, depthcm = 0.5, 
+                  hi = list(intercept = 1, depthcm = 0.5, 
                             Ndep = 0.5, avgT= 0.5)) 
 
 priorList <- list(alphaSign = alphaSign,
@@ -194,7 +194,7 @@ timeList <- mergeList(tlist, tmp)
 
 # run model
 modelList <- list(
-  typeNames = "DA", ng = 1000, burnin = 300,
+  typeNames = "DA", ng = 6000, burnin = 1000,
   timeList = timeList, effort = effort
 )
 
