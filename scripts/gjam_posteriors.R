@@ -62,13 +62,6 @@ ggplot(rhosall, aes(y=DESCAE_depthcm, fill=treat))+ geom_boxplot( )+
   xlab(" ")+ theme(axis.text.x=element_blank(),
                    axis.ticks.x=element_blank())
 
-ggplot(rhosall, aes(y=DESCAE_depthcm, color=warm, fill=snow, shape=N))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of snow depth")+ 
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank())
-
-
 ggplot(rhosall, aes(y=DESCAE_Ndep, fill=treat))+ geom_boxplot( )+
   geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
   theme_classic()+ ylab("Effect of N deposition")+
@@ -219,7 +212,6 @@ ggplot(rhosall, aes(y=ARTSCO_avgT, fill=treat))+ geom_boxplot( )+
   theme_classic()+ ylab("Effect of temperature")+
   xlab(" ")+ theme(axis.text.x=element_blank(),
                    axis.ticks.x=element_blank())
-
 
 #a-priori contrasts---- NOT USING
 #XXW vs XXX----
@@ -598,7 +590,7 @@ pdf(file="plots/modDAtime_XNXplots/delta_alpha_plot.pdf")
 corrplot(delta_alpha_XNX_XXX ,method = "color", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas XNX-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
 dev.off()
 
 #XXX vs XXW----
@@ -611,7 +603,7 @@ pdf(file="plots/modDAtime_XXWplots/delta_alpha_plot.pdf")
 corrplot(delta_alpha_XXW_XXX ,method = "color", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas XXW-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
 dev.off()
 
 #warming increases competition compared to control 
@@ -626,7 +618,7 @@ pdf(file="plots/modDAtime_PXXplots/delta_alpha_plot.pdf")
 corrplot(delta_alpha_PXX_XXX ,method = "color", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas PXX-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
 dev.off()
 #snow addition increases and decreases competition compared to control 
 
@@ -640,7 +632,7 @@ pdf(file="plots/modDAtime_XNWplots/delta_alpha_plot.pdf")
 corrplot(delta_alpha_XNW_XXX ,method = "color", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas XNW-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
 dev.off()
 
 #XXX vs PNX----
@@ -653,7 +645,7 @@ pdf(file="plots/modDAtime_PNXplots/delta_alpha_plot.pdf")
 corrplot(delta_alpha_PNX_XXX ,method = "color", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas PNX-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
 dev.off()
 #a lot changes here
 #deschampsia weaker comp with many spp, stronger competition with geum
@@ -668,7 +660,7 @@ pdf(file="plots/modDAtime_PXWplots/delta_alpha_plot.pdf")
 corrplot(delta_alpha_PXW_XXX ,method = "color", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas PXW-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
 dev.off()
 
 #deschampsia stronger competittion with geum
@@ -682,7 +674,7 @@ pdf(file="plots/modDAtime_PNWplots/delta_alpha_plot.pdf")
 corrplot(delta_alpha_PNW_XXX ,method = "color", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas PNW-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.45, 0.45))
+         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
 dev.off()
 
 #deschampsia stronger competition with geum
