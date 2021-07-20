@@ -100,19 +100,52 @@ ggplot(data=spp_change, aes(x =year2, y=change, color=group))+
   facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
 
 
+#BY GROUPS 
+#CODYN change over time 
+#wrt 2006 for each time point 
+group_abund<-group_by(spp_abund, group, plot, year)%>%
+  mutate(group_hits=sum(spp_hits))%>%
+  select(group, plot, year, group_hits)%>%distinct(.)
+
+group_change<-abundance_change(df = group_abund,
+                               species.var = "group",
+                               abundance.var = "group_hits",
+                               replicate.var = "plot",
+                               time.var = "year", reference.time = '2006')
+
+group_change<-left_join(group_change, select(sppcomp, plot, code))%>%distinct(.)
+
+
+#plot
+ggplot(data=group_change, aes(x =year2, y=change, color=group))+
+  #geom_point(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  geom_smooth(se=T)+ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
+
+ggplot(data=group_change, aes(x =year2, y=change, color=group))+
+  #geom_point(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  geom_smooth(method='lm', se=T, formula = y~x)+
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
+
+
 #model change over time 
-spp_change<-mutate(spp_change, years=year2-2006)
-delta_abund<-lm(change~0+ group:years:code,spp_change)
+#spp_change<-mutate(spp_change, years=year2-2006)
+group_change<-mutate(group_change, years=year2-2006)
+
+#delta_abund<-lm(change~0+ group:years:code,spp_change)
+delta_abund<-lm(change~0+ group:years:code,group_change)
 summary(delta_abund)
 
 #singularity with random effect of plot-level the change is calculated at
-delta_abundx<-lmer(change~0+ group:years:code +(1|plot),spp_change, 
+delta_abundx<-lmer(change~0+ group:years:code +(1|plot), group_change, 
 control = lmerControl(optimizer= "optimx", optCtrl  = list(method="nlminb")))
 summary(delta_abundx)
 
-delta_abundx<-lmer(change~0+ group:years:code +(1|year2) ,spp_change, 
+delta_abundx<-lmer(change~0+ group:years:code +(1|year2) ,group_change, 
 control = lmerControl(optimizer= "optimx", optCtrl  = list(method="nlminb")))
 summary(delta_abundx)
+#https://stats.stackexchange.com/questions/138464/identical-ses-for-all-slopes-in-a-regression-on-a-factor
 
 
 #pull out slope coefficients and plot
@@ -129,12 +162,21 @@ coeffs<-mutate(coeffs, Response=case_when(Estimate>0 & pval<0.05~"Sig",
   #reorder groups by dominance to match gjam output 
   mutate(group = factor(group, levels=c( "groupDOM", "groupSUBDOM", "groupMODERATE", "groupRARE")))
 
+coeffs$SE<-coeffs$`Std. Error`
+
 #plot slope coefficients
 ggplot(data=coeffs, aes(x =Estimate, y=treat, color=group, shape=Response))+
-  geom_point(stat="identity", position="identity", size=2) + theme_classic() +
-  geom_vline(xintercept = 0, lty=2)+ xlab("Slope change in abundance/yr")+ 
-  scale_color_manual(values=plotcol)+xlim(-1, 2.5)
+  geom_point(stat="identity", position="identity", size=3) + theme_classic() +
+  #geom_pointrange(aes(xmin = Estimate-SE, xmax = Estimate+SE))+
+  geom_vline(xintercept = 0, lty=2)+ xlab("Slope change in cover")+ 
+  scale_color_manual(values=plotcol)+xlim(-2, 2.5)
 
+ggplot(data=subset(coeffs,code!="XNX"&code!="PNX"& code!="PXX"),
+       aes(x =Estimate, y=treat, color=group))+
+  geom_point(stat="identity", position="identity", size=2) + theme_classic() +
+  geom_pointrange(aes(xmin = Estimate-SE, xmax = Estimate+SE))+
+  geom_vline(xintercept = 0, lty=2)+ xlab("Slope change in cover")+ 
+  scale_color_manual(values=plotcol)+xlim(-2, 2.5)
 
 #plot change over time with model slopes 
 coeffs<-mutate(coeffs, 
@@ -154,16 +196,20 @@ coeffs<-mutate(coeffs,
                    treat=="codePNW"~"PNW"))
                   
 
-spp_changex<-left_join(spp_change, coeffs)        
+#spp_changex<-left_join(spp_change, coeffs)        
+group_changex<-left_join(group_change, coeffs)        
 
 #plot model predlines 
+#lm model-delta_abund 
+#https://aosmith.rbind.io/2018/11/16/plot-fitted-lines/#plotting-separate-slopes-with-geom_smooth
 predslm = predict(delta_abund, interval = "confidence", level = 0.95)
 head(predslm)
 
-spp_changex<-cbind(spp_changex, predslm)
+#spp_changex<-cbind(spp_changex, predslm)
+group_changex<-cbind(group_changex, predslm)
 
 #plots
-ggplot(data=spp_changex, aes(x =year2, y=change, color=group))+
+ggplot(data=group_changex, aes(x =year2, y=change, color=group))+
   geom_line(aes(y=fit))+
   geom_ribbon( aes(ymin = lwr, ymax = upr, color= group, color = NULL), alpha = .15) +
   geom_point(aes(x =year2, y=change, color=group)) + theme_classic()+  
@@ -172,7 +218,7 @@ ggplot(data=spp_changex, aes(x =year2, y=change, color=group))+
   facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
 
 #w free scales on y axis 
-ggplot(data=spp_changex, aes(x =year2, y=change, color=group))+
+ggplot(data=group_changex, aes(x =year2, y=change, color=group))+
   geom_line(aes(y=fit))+
   geom_ribbon( aes(ymin = lwr, ymax = upr, color= group, color = NULL), alpha = .15) +
   geom_point(aes(x =year2, y=change, color=group)) + theme_classic()+  
@@ -182,7 +228,7 @@ ggplot(data=spp_changex, aes(x =year2, y=change, color=group))+
 
 
 #lines only 
-ggplot(data=spp_changex, aes(x =year2, y=change, color=group))+
+ggplot(data=group_changex, aes(x =year2, y=change, color=group))+
   geom_line(aes(y=fit))+
   geom_ribbon( aes(ymin = lwr, ymax = upr, color= group, color = NULL), alpha = .15) +
   #geom_point(aes(x =year2, y=change, color=group)) + theme_classic()+  
@@ -191,11 +237,135 @@ ggplot(data=spp_changex, aes(x =year2, y=change, color=group))+
   facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
 
 #now plot for treatments with warming only 
-ggplot(data=subset(spp_changex,code!="XNX"&code!="PNX"& code!="PXX"),
+ggplot(data=subset(group_changex,code!="XNX"&code!="PNX"& code!="PXX"),
                    aes(x =year2, y=change, color=group))+
   geom_line(aes(y=fit))+
-  geom_ribbon( aes(ymin = lwr, ymax = upr, color= group, color = NULL), alpha = .15) +
-  geom_point(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  geom_ribbon( aes(ymin = lwr, ymax = upr, color= group), alpha = .15) +
+  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
   #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
   ylab("cover change from year 1")+ xlab("year")+
   facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
+
+ggplot(data=subset(group_changex,code!="XNX"&code!="PNX"& code!="PXX"),
+       aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=fit))+
+  geom_ribbon( aes(ymin = lwr, ymax = upr, color= group), alpha = .15) +
+  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code,scales="free") +theme_bw()+ scale_color_manual(values=plotcol)
+
+
+#lmer model w year RE
+#delta_abundx
+#http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#predictions-andor-confidence-or-prediction-intervals-on-predictions
+#make new dataframe
+newdat = data.frame(group = group_changex$group,
+years = group_changex$years,
+code = group_changex$code, 
+year2=group_changex$year2, 
+change=group_changex$change)
+
+head(newdat)
+#predict over new data 
+newdat$distance = predict(delta_abundx, newdata = newdat, re.form=NA)
+mm <- model.matrix(terms(delta_abundx),newdat)
+## or newdat$distance <- mm %*% fixef(fm1)
+pvar1 <- diag(mm %*% tcrossprod(vcov(delta_abundx),mm))
+random<-VarCorr(delta_abundx)
+tvar1 <- pvar1+random$year2  ## must be adapted for more complex models
+cmult <- 1.96 ## could use 1.96
+
+newdat <- data.frame(
+  newdat
+  , plo = newdat$distance-cmult*sqrt(pvar1)
+  , phi = newdat$distance+cmult*sqrt(pvar1)
+  , tlo = newdat$distance-cmult*sqrt(tvar1)
+  , thi = newdat$distance+cmult*sqrt(tvar1)
+)
+
+
+#plots
+#with fixed effects uncertainty only 
+ggplot(data=newdat, aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=distance))+
+  geom_ribbon( aes(ymin = plo, ymax =  phi, color= group), alpha = .15) +
+  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
+
+#with fixed & random effects uncertainty 
+#WHY DOES THIS LOOK THE SAME AS THE ONE ABOVE?? SCALING ISSUE?
+#most of the differences in thi/lo and phi/lo are not for the dominant species so 
+#it it hard to see in the plots 
+ggplot(data=newdat, aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=distance))+
+  geom_ribbon(aes(ymin = tlo, ymax = thi, color= group,), alpha = .15) +
+  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
+
+
+#try with scales="free"
+#with fixed effects uncertainty only 
+ggplot(data=newdat, aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=distance))+
+  geom_ribbon( aes(ymin = plo, ymax =  phi, color= group), alpha = .15) +
+  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code, scales = "free") +theme_bw()+ scale_color_manual(values=plotcol)
+
+#with fixed & random effects uncertainty 
+ggplot(data=newdat, aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=distance))+
+  geom_ribbon(aes(ymin = tlo, ymax = thi, color= group,), alpha = .15) +
+  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code, scales = "free") +theme_bw()+ scale_color_manual(values=plotcol)
+
+#try without points-can see slight changes
+ggplot(data=newdat, aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=distance))+
+  geom_ribbon( aes(ymin = plo, ymax =  phi, color= group), alpha = .15) +
+  #geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code, scales = "free") +theme_bw()+ scale_color_manual(values=plotcol)
+
+#with fixed & random effects uncertainty 
+ggplot(data=newdat, aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=distance))+
+  geom_ribbon(aes(ymin = tlo, ymax = thi, color= group,), alpha = .15) +
+  #geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code, scales = "free") +theme_bw()+ scale_color_manual(values=plotcol)
+
+
+ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=distance))+
+  geom_ribbon( aes(ymin = plo, ymax =  phi, color= group), alpha = .15) +
+  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
+
+ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, y=change, color=group))+
+  geom_line(aes(y=distance))+
+  geom_ribbon( aes(ymin = tlo, ymax =  thi, color= group), alpha = .15) +
+  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code, scales="free") +theme_bw()+ scale_color_manual(values=plotcol)
+
+ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"),
+       aes(x =as.factor(year2), y=change, color=group))+
+  geom_boxplot()+
+  #geom_ribbon( aes(ymin = tlo, ymax =  thi, color= group), alpha = .15) +
+  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
+  ylab("cover change from year 1")+ xlab("year")+
+  facet_wrap(~ code, scales="free") +theme_bw()+ scale_color_manual(values=plotcol)
