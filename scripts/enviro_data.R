@@ -45,6 +45,12 @@ Ndep<-mutate(Ndep, time=year-2006)%>%
 
 plot(Ndep$NdepCum~Ndep$year)#looks good-saturating for N addition plots 
 
+ggplot(data=Ndep, aes(x=year, y=NdepCum, color=N))+ geom_point() +geom_line()+
+  ylab("N deposition (g/m2)")+ theme_bw()
+
+#ggplot(data=snowdat, aes(x=year, y=depth_cm, fill=month))+ 
+#  geom_boxplot() #april is measured in 8 years and doesn't have outliers 
+
 #Munge temp data 
 temp<-read.csv("data/raw_env/sdlcr23x-cr1000.daily.ml.data.csv")
 temp2<-read.csv("data/raw_env/sdl_cr1000_tenmin.csv")#2020 data from ftp
@@ -75,6 +81,9 @@ temp2<-as.data.frame(temp2)
 temp<-rbind(temp, temp2) #combine temp and temp 2020
 temp$W<-temp$avgT+1 #warming chambers increase 1 deg C
 temp<-rename(temp, X=avgT)%>%pivot_longer(cols=c("X", "W"),names_to = "temp", values_to = "avgT")
+
+ggplot(temp, aes(x=year, y=avgT, color=temp)) + geom_point(shape=15, size=2)+
+  theme_bw()
 
 #Munge Snow data 
 snowdat<-read.csv("data/raw_env/NWT_ITEX_snowdepth_CC.csv")#CC swapped 2011 treatment codes for April 12/15/20
@@ -173,7 +182,7 @@ snow_allXX<-select(snow_allXX, -keep)%>%mutate(infill=ifelse(depth_cm==depth_cm2
 
 #plot 
 ggplot(data=snow_allXX, aes(x=as.factor(year), y=depth_cm, fill=snow_trt))+ 
-  geom_boxplot()#looks OK
+  geom_boxplot()+ theme_bw()#looks OK
 
 
 #combine all enviro data 
