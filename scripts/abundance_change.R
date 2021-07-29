@@ -346,6 +346,10 @@ ggplot(data=newdat, aes(x =year2, y=change, color=group))+
   facet_wrap(~ code, scales = "free") +theme_bw()+ scale_color_manual(values=plotcol)
 
 
+###Fig 1
+newdat<-mutate(newdat, group = factor(group, 
+  levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
+
 ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, y=change, color=group))+
   geom_line(aes(y=distance))+
   geom_ribbon( aes(ymin = plo, ymax =  phi, color= group), alpha = .15) +
