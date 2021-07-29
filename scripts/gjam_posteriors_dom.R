@@ -4,50 +4,154 @@ library(ggplot2)
 library(tidyr)
 library(ggpubr)
 library(corrplot)
+library(bayestestR)
 
 #rhos---- 
 #XXX
 load(file = "outputs/modDAtime_XXXoutput_dom.RData")
-rhosXXX<-as.data.frame(modDAtimeXXX$chains$lgibbs)
+rhosXXX<-as.data.frame(modDAtimeXXX$parameters$rhoTable)
+rhosXXX<-separate(rhosXXX, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXXX$treat<-"XXX"
+
 
 #XXW
 load(file = "outputs/modDAtime_XXWoutput_dom.RData")
-rhosXXW<-as.data.frame(modDAtimeXXW$chains$lgibbs)
+rhosXXW<-as.data.frame(modDAtimeXXW$parameters$rhoTable)
+rhosXXW<-separate(rhosXXW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXXW$treat<-"XXW"
 
 #PXX
-load(file = "outputs/modDAtime_PXXoutput_dom.RData")
-rhosPXX<-as.data.frame(modDAtimePXX$chains$lgibbs)
-rhosPXX$treat<-"PXX"
+#load(file = "outputs/modDAtime_PXXoutput_dom.RData")
+#rhosPXX<-as.data.frame(modDAtimePXX$chains$lgibbs)
+#rhosPXX$treat<-"PXX"
 
 #XNX
-load(file = "outputs/modDAtime_XNXoutput_dom.RData")
-rhosXNX<-as.data.frame(modDAtimeXNX$chains$lgibbs)
-rhosXNX$treat<-"XNX"
+#load(file = "outputs/modDAtime_XNXoutput_dom.RData")
+#rhosXNX<-as.data.frame(modDAtimeXNX$chains$lgibbs)
+#rhosXNX$treat<-"XNX"
 
 #PNX
-load(file = "outputs/modDAtime_PNXoutput_dom.RData")
-rhosPNX<-as.data.frame(modDAtimePNX$chains$lgibbs)
-rhosPNX$treat<-"PNX"
+#load(file = "outputs/modDAtime_PNXoutput_dom.RData")
+#rhosPNX<-as.data.frame(modDAtimePNX$chains$lgibbs)
+#rhosPNX$treat<-"PNX"
 
 #XNW
 load(file = "outputs/modDAtime_XNWoutput_dom.RData")
-rhosXNW<-as.data.frame(modDAtimeXNW$chains$lgibbs)
+rhosXNW<-as.data.frame(modDAtimeXNW$parameters$rhoTable)
+rhosXNW<-separate(rhosXNW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXNW$treat<-"XNW"
 
 #PXW
 load(file = "outputs/modDAtime_PXWoutput_dom.RData")
-rhosPXW<-as.data.frame(modDAtimePXW$chains$lgibbs)
+rhosPXW<-as.data.frame(modDAtimePXW$parameters$rhoTable)
+rhosPXW<-separate(rhosPXW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosPXW$treat<-"PXW"
 
 #PNW
 load(file = "outputs/modDAtime_PNWoutput_dom.RData")
-rhosPNW<-as.data.frame(modDAtimePNW$chains$lgibbs)
+rhosPNW<-as.data.frame(modDAtimePNW$parameters$rhoTable)
+rhosPNW<-separate(rhosPNW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosPNW$treat<-"PNW"
 
 #plot all 
-rhosall<-rbind(rhosXXX, rhosXXW, rhosPXX, rhosXNX, rhosPNX,  rhosXNW, rhosPXW, rhosPNW)
+rhosall<-rbind(rhosXXX, rhosXXW,rhosXNW, rhosPXW, rhosPNW)
+rhosall<-subset(rhosall, enviro!="intercept")
+specColor <- c(
+  "#89C5DA", "#DA5724", "#74D944", "#CE50CA", "#3F4921", "#C0717C", "#CBD588", "#5F7FC7",
+  "#673770", "#D3D93E", "#38333E", "#508578", "#D7C1B1", "#689030", "#AD6F3B", "#CD9BCD",
+  "#D14285", "#6DDE88", "#652926", "#7FDCC0", "#C84248", "#8569D5", "#5E738F", "#D1A33D",
+  "#8A7C64", "#599861", "#89C5DA", "#DA5724", "#74D944", "#CE50CA", "#3F4921", "#C0717C", "#CBD588", "#5F7FC7",
+  "#673770", "#D3D93E", "#38333E", "#508578", "#D7C1B1", "#689030", "#AD6F3B", "#CD9BCD",
+  "#D14285", "#6DDE88", "#652926", "#7FDCC0", "#C84248", "#8569D5", "#5E738F", "#D1A33D",
+  "#8A7C64", "#599861"
+)
+
+#reorder groups by dominance to match gjam output 
+rhosall<-mutate(rhosall,group = factor(group, 
+      levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
+
+#Fig 2
+a<- ggplot(subset(rhosall,treat=="XXX"), aes(y=Estimate, x=group, color=group))+ 
+  geom_point( )+
+  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
+  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  facet_wrap(~enviro, scales='free')+ theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  ggtitle("Control")+xlab(" ")+ scale_color_manual(values = specColor)+
+  geom_hline(yintercept =0, color='black', lty=2)
+
+b<-ggplot(subset(rhosall,treat=="XXW"), aes(y=Estimate, x=group, color=group))+ 
+  geom_point( )+
+  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
+  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  facet_wrap(~enviro, scales='free')+ theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  ggtitle("Warming")+xlab(" ")+ ylab(" ")+scale_color_manual(values = specColor)+
+  geom_hline(yintercept =0, color='black', lty=2)
+
+c<-ggplot(subset(rhosall,treat=="XNW"), aes(y=Estimate, x=group, color=group))+ 
+  geom_point( )+
+  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
+  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  facet_wrap(~enviro, scales='free')+ theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  ggtitle("N + warming")+ xlab(" ")+ ylab(" ")+scale_color_manual(values = specColor)+
+  geom_hline(yintercept =0, color='black', lty=2)
+
+d<-ggplot(subset(rhosall,treat=="PXW"), aes(y=Estimate, x=group, color=group))+ 
+  geom_point( )+
+  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
+  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  facet_wrap(~enviro, scales='free')+ theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  ggtitle("Snow + warming")+ xlab(" ")+ ylab(" ")+scale_color_manual(values = specColor)+
+  geom_hline(yintercept =0, color='black', lty=2)
+
+#e<-ggplot(subset(rhosall,treat=="PNW"), aes(y=Estimate, x=group, color=group))+ 
+ # geom_point( )+
+#  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
+  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+ # facet_wrap(~enviro, scales='free')+ theme_bw()+
+  #theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  #ggtitle("Snow + N + warming")+ xlab(" ")+ ylab(" ")+scale_color_manual(values = specColor)+
+  #geom_hline(yintercept =0, color='black', lty=2)
+
+ggpubr::ggarrange(a, b, c,d, common.legend = TRUE,  ncol = 2, nrow = 2)
+
+
+
+ggplot(subset(rhosall,treat=="XXX"), aes(y=Estimate, x=group, color=group))+ 
+  geom_point( )+
+  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  facet_wrap(~enviro, scales='free')+ theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  ggtitle("XXX")+xlab(" ")+ 
+  geom_hline(yintercept =0, color='black', lty=2)
+
+b<-ggplot(subset(rhosall,enviro=="depthcm"), aes(y=Estimate, x=group, color=group))+ 
+  geom_point( )+
+  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  facet_wrap(~treat, scales='free')+ theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  ggtitle("Snow depth")+xlab(" ")+ ylab(" ")+
+  geom_hline(yintercept =0, color='black', lty=2)
+
+c<-ggplot(subset(rhosall,enviro=="Ndep"), aes(y=Estimate, x=group, color=group))+ 
+  geom_point( )+
+  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  facet_wrap(~treat, scales='free')+ theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  ggtitle("N deposition")+ xlab(" ")+ ylab(" ")+
+  geom_hline(yintercept =0, color='black', lty=2)
+
+
+
+geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
+  theme_classic()+ ylab("Effect of snow depth")+ 
+  xlab(" ")+ theme(axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())+ ggtitle("Dominant species")
+
+
 ggplot(rhosall, aes(y=DOM_depthcm, fill=treat))+ geom_boxplot( )+
   geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
   theme_classic()+ ylab("Effect of snow depth")+ 
@@ -119,6 +223,8 @@ ggplot(rhosall, aes(y=RARE_avgT, fill=treat))+ geom_boxplot( )+
   theme_classic()+ ylab("Effect of temperature")+
   xlab(" ")+ theme(axis.text.x=element_blank(),
                    axis.ticks.x=element_blank()) +ggtitle("Rare species")
+
+x<-ci(rhosall$DOM_depthcm, ci = 0.95)
 
 #alphas----
 #XXX vs XNX
@@ -386,3 +492,17 @@ ggplot(alphasall, aes(y=log(intra_inter_res), fill=treat))+ geom_boxplot( )+
   xlab(" ")+ theme(axis.text.x=element_blank(),
                    axis.ticks.x=element_blank()) +ggtitle("Dominant species")
 
+#Supplementary table alphas 
+
+alphasXXX<-modDAtimeXXX$parameters$alphaTable%>%
+  mutate(treat="XXX")
+alphasXXW<-modDAtimeXXW$parameters$alphaTable%>%
+  mutate(treat="XXW")
+alphasXNW<-modDAtimeXNW$parameters$alphaTable%>%
+  mutate(treat="XNW")
+alphasPXW<-modDAtimePXW$parameters$alphaTable%>%
+  mutate(treat="PXW")
+alphasPNW<-modDAtimePNW$parameters$alphaTable%>%
+  mutate(treat="PNW")
+alphas_table<-rbind(alphasXXX,alphasXXW, alphasXNW, alphasPXW, alphasPNW)
+write.csv(alphas_table, "supp_table_alphas.csv")
