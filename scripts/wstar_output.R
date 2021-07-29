@@ -30,7 +30,7 @@ ggplot(wstarxxx, aes(x=depthcm, y=mu, col=spp)) +geom_smooth()+
 
 ggplot(wstarxxx, aes(x=as.factor(depthcm), y=mu, col=spp)) +geom_boxplot()+
   #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
-  facet_wrap(~spp, scales ="free")
+  facet_wrap(~spp, scales ="free")+ theme_classic()
 
 ggplot(wstarxxx, aes(x=Ndep, y=mu, col=spp)) +geom_smooth()+
   #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
@@ -48,8 +48,6 @@ ggplot(wstarxxx, aes(x=as.factor(avgT), y=mu, col=spp)) +geom_boxplot()+
   #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
   facet_wrap(~spp, scales ="free")
 
-#fit mods 
-library(mgcv)
 #subset by spp 
 artsco=subset(wstarxxx, spp=="ARTSCO")
 desc=subset(wstarxxx, spp=="DESCAE")
@@ -659,8 +657,6 @@ summary(fit_modNdeppxx_descNL)#NS
 summary(fit_modNdeppxx_triparNL)#sig
 
 
-
-
 #PXW----
 load(file = "outputs/wstar_PXWoutput.RData")
 
@@ -706,6 +702,7 @@ rarespp=subset(wstarpxw, spp=="RARESPP")
 carsco=subset(wstarpxw, spp=="CARSCO")
 bisbis=subset(wstarpxw, spp=="BISBIS")
 callep=subset(wstarpxw, spp=="CALLEP")
+
 
 #snow
 modsnowNL<-bf(mu|resp_se(sd, sigma = TRUE)~s(depthcm))
@@ -1111,3 +1108,43 @@ ggplot(desc_wstar, aes(x=depthcm, y=mu, col=treat)) +
 ggplot(desc_wstar, aes(x=Ndep, y=mu, col=treat)) +
   geom_smooth()+ylab("mu equilibrium abundance")+
   theme_classic()
+
+#non linear looking 
+#geum
+ggplot(wstarxxx, aes(x=as.factor(depthcm), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none") 
+
+#carsco, tripar
+ggplot(wstarpnx, aes(x=as.factor(depthcm), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none")
+#carsco
+ggplot(wstarpnx, aes(x=as.factor(Ndep), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none")
+#bisbis
+ggplot(wstarxnw, aes(x=as.factor(Ndep), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none")
+#rare spp
+ggplot(wstarpxx, aes(x=as.factor(depthcm), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none")
+#tripar, callep? desc?
+ggplot(wstarpxx, aes(x=as.factor(Ndep), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none")
+#bisbis, rarespp?
+ggplot(wstarxnx, aes(x=as.factor(depthcm), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none")
+#tripar, gemalg?
+ggplot(wstarxnx, aes(x=as.factor(Ndep), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none")
+#Desc, genalg, tripar, artsco?
+ggplot(wstarpxw, aes(x=as.factor(avgT), y=mu, col=spp)) +geom_boxplot()+
+  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
+  facet_wrap(~spp, scales ="free")+ theme_classic()+ theme(legend.position="none")
+
