@@ -5,7 +5,6 @@ library(brms)
 library(ggplot2)
 
 
-
 #XXX----
 load(file = "outputs/wstar_XXXoutput.RData")
 
