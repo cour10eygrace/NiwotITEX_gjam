@@ -48,6 +48,14 @@ plot(Ndep$NdepCum~Ndep$year)#looks good-saturating for N addition plots
 ggplot(data=Ndep, aes(x=year, y=NdepCum, color=N))+ geom_point() +geom_line()+
   ylab("N deposition (g/m2)")+ theme_bw()
 
+#update for 2006 with pre-treatment value 
+Ndep_plot<- mutate(Ndep, 
+    Ndep=case_when(year==2006~0.1606,TRUE~Ndep))%>%
+  mutate(NdepCum=case_when(year==2006~0.1606,TRUE~NdepCum))
+
+ggplot(data=Ndep_plot, aes(x=year, y=NdepCum, color=N))+ geom_point() +geom_line()+
+  ylab("N deposition (g/m2)")+ theme_bw()
+
 #ggplot(data=snowdat, aes(x=year, y=depth_cm, fill=month))+ 
 #  geom_boxplot() #april is measured in 8 years and doesn't have outliers 
 
@@ -83,6 +91,12 @@ temp$W<-temp$avgT+1 #warming chambers increase 1 deg C
 temp<-rename(temp, X=avgT)%>%pivot_longer(cols=c("X", "W"),names_to = "temp", values_to = "avgT")
 
 ggplot(temp, aes(x=year, y=avgT, color=temp)) + geom_point(shape=15, size=2)+
+  theme_bw()
+#update for 2006 with pre-treatment value 
+temp_plot<- mutate(temp, 
+  avgT=case_when(year==2006~10.239163,TRUE~avgT))
+ggplot(temp_plot, aes(x=year, y=avgT, color=temp)) + 
+  geom_point(shape=15, size=2, position=position_dodge(width=0.5))+
   theme_bw()
 
 #Munge Snow data 
@@ -184,6 +198,14 @@ snow_allXX<-select(snow_allXX, -keep)%>%mutate(infill=ifelse(depth_cm==depth_cm2
 ggplot(data=snow_allXX, aes(x=as.factor(year), y=depth_cm, fill=snow_trt))+ 
   geom_boxplot()+ theme_bw()#looks OK
 
+#update for 2006 with pre-treatment value 
+snow_plot<- mutate(snow_allXX, 
+depth_cm=case_when(year==2006&snow_trt=="P"&block ==1~	45.94156,
+                   year==2006&snow_trt=="P"&block ==2~	50.10823,
+                   year==2006&snow_trt=="P"&block ==3~	44.27490,
+                    TRUE~depth_cm))
+ggplot(data=snow_plot, aes(x=as.factor(year), y=depth_cm, fill=snow_trt))+ 
+  geom_boxplot()+ theme_bw()#looks OK
 
 #combine all enviro data 
 str(Ndep)
