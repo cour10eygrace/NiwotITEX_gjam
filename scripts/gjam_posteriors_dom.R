@@ -75,7 +75,7 @@ a<- ggplot(subset(rhosall,treat=="XXX"), aes(y=Estimate, x=group, color=group))+
   geom_point( )+
   geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
   #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~enviro, scales='free')+ theme_bw()+
+  facet_wrap(~enviro, scales='free')+ theme_bw()+ylab("Rho coefficients")+
   theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
   ggtitle("Control")+xlab(" ")+ scale_color_manual(values = specColor)+
   geom_hline(yintercept =0, color='black', lty=2)
@@ -84,9 +84,9 @@ b<-ggplot(subset(rhosall,treat=="XXW"), aes(y=Estimate, x=group, color=group))+
   geom_point( )+
   geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
   #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~enviro, scales='free')+ theme_bw()+
+  facet_wrap(~enviro, scales='free')+ theme_bw()+ylab(" ")+
   theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("Warming")+xlab(" ")+ ylab(" ")+scale_color_manual(values = specColor)+
+  ggtitle("Warming")+xlab(" ")+scale_color_manual(values = specColor)+
   geom_hline(yintercept =0, color='black', lty=2)
 
 c<-ggplot(subset(rhosall,treat=="XNW"), aes(y=Estimate, x=group, color=group))+ 
@@ -95,28 +95,30 @@ c<-ggplot(subset(rhosall,treat=="XNW"), aes(y=Estimate, x=group, color=group))+
   #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
   facet_wrap(~enviro, scales='free')+ theme_bw()+
   theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("N + warming")+ xlab(" ")+ ylab(" ")+scale_color_manual(values = specColor)+
+  ggtitle("N + warming")+ xlab(" ")+ ylab("Rho coefficients")+scale_color_manual(values = specColor)+
   geom_hline(yintercept =0, color='black', lty=2)
 
 d<-ggplot(subset(rhosall,treat=="PXW"), aes(y=Estimate, x=group, color=group))+ 
   geom_point( )+
-  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
-  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  #geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
+  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
   facet_wrap(~enviro, scales='free')+ theme_bw()+
   theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
   ggtitle("Snow + warming")+ xlab(" ")+ ylab(" ")+scale_color_manual(values = specColor)+
   geom_hline(yintercept =0, color='black', lty=2)
 
-#e<-ggplot(subset(rhosall,treat=="PNW"), aes(y=Estimate, x=group, color=group))+ 
- # geom_point( )+
-#  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
-  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
- # facet_wrap(~enviro, scales='free')+ theme_bw()+
-  #theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  #ggtitle("Snow + N + warming")+ xlab(" ")+ ylab(" ")+scale_color_manual(values = specColor)+
-  #geom_hline(yintercept =0, color='black', lty=2)
+e<-ggplot(subset(rhosall,treat=="PNW"), aes(y=Estimate, x=group, color=group))+ 
+  geom_point( )+
+  #geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
+  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
+  facet_wrap(~enviro, scales='free')+ theme_bw()+ylab("Rho coefficients")+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  ggtitle("Snow + N + warming")+ xlab(" ")+scale_color_manual(values = specColor)+
+  geom_hline(yintercept =0, color='black', lty=2)
 
-ggpubr::ggarrange(a, b, c,d, common.legend = TRUE,  ncol = 2, nrow = 2)
+
+#Fig 2
+ggpubr::ggarrange(e,d, c, b, a, common.legend = TRUE,  ncol = 2, nrow = 3)
 
 
 
@@ -506,3 +508,28 @@ alphasPNW<-modDAtimePNW$parameters$alphaTable%>%
   mutate(treat="PNW")
 alphas_table<-rbind(alphasXXX,alphasXXW, alphasXNW, alphasPXW, alphasPNW)
 write.csv(alphas_table, "supp_table_alphas.csv")
+
+#Fig S6
+#supplementary density plots 
+densXXX<-as.data.frame(modDAtimeXXX$prediction$ypredMu)
+densXXW<-as.data.frame(modDAtimeXXW$prediction$ypredMu)
+densPXW<-as.data.frame(modDAtimePXW$prediction$ypredMu)
+densXNW<-as.data.frame(modDAtimeXNW$prediction$ypredMu)
+densPNW<-as.data.frame(modDAtimePNW$prediction$ypredMu)
+densXXX$treat<-"XXX"
+densXXW$treat<-"XXW"
+densPXW$treat<-"PXW"
+densXNW$treat<-"XNW"
+densPNW$treat<-"PNW"
+
+dens<-rbind(densXXX, densXXW, densXNW, densPXW, densPNW)
+dens<-pivot_longer(dens, c("DOM", "SUBDOM", "MODERATE", "RARE"), 
+                   names_to="group",values_to="ypredMu" )
+dens<-mutate(dens,group = factor(group, 
+                              levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
+
+
+ggplot(dens, aes(x=ypredMu, fill=group))+ geom_density(alpha=0.5)+
+  facet_wrap(~treat)+ theme_bw()+scale_fill_manual(values = specColor)+
+  xlim(0,100)
+  
