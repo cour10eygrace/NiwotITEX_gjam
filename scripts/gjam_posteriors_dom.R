@@ -116,132 +116,23 @@ e<-ggplot(subset(rhosall,treat=="PNW"), aes(y=Estimate, x=group, color=group))+
   ggtitle("Snow + N + warming")+ xlab(" ")+scale_color_manual(values = specColor)+
   geom_hline(yintercept =0, color='black', lty=2)
 
-
-#Fig 2
 ggpubr::ggarrange(e,d, c, b, a, common.legend = TRUE,  ncol = 2, nrow = 3)
 
 
-
-ggplot(subset(rhosall,treat=="XXX"), aes(y=Estimate, x=group, color=group))+ 
-  geom_point( )+
-  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~enviro, scales='free')+ theme_bw()+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("XXX")+xlab(" ")+ 
-  geom_hline(yintercept =0, color='black', lty=2)
-
-b<-ggplot(subset(rhosall,enviro=="depthcm"), aes(y=Estimate, x=group, color=group))+ 
-  geom_point( )+
-  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~treat, scales='free')+ theme_bw()+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("Snow depth")+xlab(" ")+ ylab(" ")+
-  geom_hline(yintercept =0, color='black', lty=2)
-
-c<-ggplot(subset(rhosall,enviro=="Ndep"), aes(y=Estimate, x=group, color=group))+ 
-  geom_point( )+
-  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~treat, scales='free')+ theme_bw()+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("N deposition")+ xlab(" ")+ ylab(" ")+
-  geom_hline(yintercept =0, color='black', lty=2)
-
-
-
-geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of snow depth")+ 
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank())+ ggtitle("Dominant species")
-
-
-ggplot(rhosall, aes(y=DOM_depthcm, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of snow depth")+ 
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank())+ ggtitle("Dominant species")
-
-ggplot(rhosall, aes(y=DOM_Ndep, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of N deposition")+
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) + ggtitle("Dominant species")
-
-ggplot(rhosall, aes(y=DOM_avgT, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of temperature")+
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Dominant species")
-
-ggplot(rhosall, aes(y=SUBDOM_depthcm, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of snow depth")+ 
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Subominant species")
-
-ggplot(rhosall, aes(y=SUBDOM_Ndep, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of N deposition")+
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Subominant species")
-
-ggplot(rhosall, aes(y=SUBDOM_avgT, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of temperature")+
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Subominant species")
-
-ggplot(rhosall, aes(y=MODERATE_depthcm, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of snow depth")+ 
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Moderate species")
-
-ggplot(rhosall, aes(y=MODERATE_Ndep, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of N deposition")+
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank())+ggtitle("Moderate species")
-
-ggplot(rhosall, aes(y=MODERATE_avgT, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of temperature")+
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Moderate species")
-
-ggplot(rhosall, aes(y=RARE_depthcm, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of snow depth")+ 
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Rare species")
-
-ggplot(rhosall, aes(y=RARE_Ndep, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of N deposition")+
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Rare species")
-
-ggplot(rhosall, aes(y=RARE_avgT, fill=treat))+ geom_boxplot( )+
-  geom_hline(aes(yintercept=0), lty=2, color="red")+# xlim (-3, 2)+
-  theme_classic()+ ylab("Effect of temperature")+
-  xlab(" ")+ theme(axis.text.x=element_blank(),
-                   axis.ticks.x=element_blank()) +ggtitle("Rare species")
-
-x<-ci(rhosall$DOM_depthcm, ci = 0.95)
-
 #alphas----
 #XXX vs XNX
-alphasXXX<-as.data.frame(modDAtimeXXX$parameters$alphaMu)
+#alphasXXX<-as.data.frame(modDAtimeXXX$parameters$alphaMu)
 
-alphasXNX<-as.data.frame(modDAtimeXNX$parameters$alphaMu)
+#alphasXNX<-as.data.frame(modDAtimeXNX$parameters$alphaMu)
 
-delta_alpha_XNX_XXX<-as.matrix(alphasXNX-alphasXXX)
+#delta_alpha_XNX_XXX<-as.matrix(alphasXNX-alphasXXX)
 
-pdf(file="plots/modDAtime_XNXplots_dom/delta_alpha_plot.pdf")
-corrplot(delta_alpha_XNX_XXX ,method = "color", 
-         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
-         number.cex = 0.75, diag =T, main="delta alphas XNX-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
-dev.off()
+#pdf(file="plots/modDAtime_XNXplots_dom/delta_alpha_plot.pdf")
+#corrplot(delta_alpha_XNX_XXX ,method = "color", 
+#         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+#         number.cex = 0.75, diag =T, main="delta alphas XNX-XXX", is.corr = FALSE, 
+ #        mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
+#dev.off()
 #decreases competition between moderate and dominant, increases competition between dominant and 
 #subdominant
 #no effect on intraspecific comp
@@ -263,16 +154,16 @@ dev.off()
 #no effect on intraspecific comp
 
 #XXX vs PXX
-alphasPXX<-as.data.frame(modDAtimePXX$parameters$alphaMu)
+#alphasPXX<-as.data.frame(modDAtimePXX$parameters$alphaMu)#
 
-delta_alpha_PXX_XXX<-as.matrix(alphasPXX-alphasXXX)
+#delta_alpha_PXX_XXX<-as.matrix(alphasPXX-alphasXXX)
 
-pdf(file="plots/modDAtime_PXXplots_dom/delta_alpha_plot.pdf")
-corrplot(delta_alpha_PXX_XXX ,method = "color", 
-         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
-         number.cex = 0.75, diag =T, main="delta alphas PXX-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
-dev.off()
+#pdf(file="plots/modDAtime_PXXplots_dom/delta_alpha_plot.pdf")
+#corrplot(delta_alpha_PXX_XXX ,method = "color", 
+#         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+#         number.cex = 0.75, diag =T, main="delta alphas PXX-XXX", is.corr = FALSE, 
+#         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
+#dev.off()
 
 #decreases competition of moderate on dominant, but increases competition of dominant on moderate 
 #slightly weakens intraspecific comp for all (delta <0.2)
@@ -292,16 +183,16 @@ dev.off()
 #rare and subdominant 
 
 #XXX vs PNX
-alphasPNX<-as.data.frame(modDAtimePNX$parameters$alphaMu)
+#alphasPNX<-as.data.frame(modDAtimePNX$parameters$alphaMu)
 
-delta_alpha_PNX_XXX<-as.matrix(alphasPNX-alphasXXX)
+#delta_alpha_PNX_XXX<-as.matrix(alphasPNX-alphasXXX)
 
-pdf(file="plots/modDAtime_PNXplots_dom/delta_alpha_plot.pdf")
-corrplot(delta_alpha_PNX_XXX ,method = "color", 
-         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
-         number.cex = 0.75, diag =T, main="delta alphas PNX-XXX", is.corr = FALSE, 
-         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
-dev.off()
+#pdf(file="plots/modDAtime_PNXplots_dom/delta_alpha_plot.pdf")
+#corrplot(delta_alpha_PNX_XXX ,method = "color", 
+#         tl.cex = 0.8, tl.col="black", addCoef.col = "black",
+#         number.cex = 0.75, diag =T, main="delta alphas PNX-XXX", is.corr = FALSE, 
+#         mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
+#dev.off()
 #decreases competition between moderate and dominant, increases competition between dominant and 
 #subdominant-same as XNX 
 #slightly decreses competition between rare and dominant 
@@ -345,6 +236,62 @@ dev.off()
 #subdominant species did not compete with dominant species in ambient conditions which increased 
 #in many global change treatments, especially N addition 
 
+
+#Supp mat----
+#alphas -Table S1
+
+alphasXXX<-modDAtimeXXX$parameters$alphaTable%>%
+  mutate(treat="XXX")
+alphasXXW<-modDAtimeXXW$parameters$alphaTable%>%
+  mutate(treat="XXW")
+alphasXNW<-modDAtimeXNW$parameters$alphaTable%>%
+  mutate(treat="XNW")
+alphasPXW<-modDAtimePXW$parameters$alphaTable%>%
+  mutate(treat="PXW")
+alphasPNW<-modDAtimePNW$parameters$alphaTable%>%
+  mutate(treat="PNW")
+alphas_table<-rbind(alphasXXX,alphasXXW, alphasXNW, alphasPXW, alphasPNW)
+write.csv(alphas_table, "supp_table_alphas.csv")
+
+#Fig S6
+#supplementary density plots 
+densXXX<-as.data.frame(modDAtimeXXX$prediction$ypredMu)
+densXXX$plotyear<-row.names(densXXX)
+densXXW<-as.data.frame(modDAtimeXXW$prediction$ypredMu)
+densXXW$plotyear<-row.names(densXXW)
+densPXW<-as.data.frame(modDAtimePXW$prediction$ypredMu)
+densPXW$plotyear<-row.names(densPXW)
+densXNW<-as.data.frame(modDAtimeXNW$prediction$ypredMu)
+densXNW$plotyear<-row.names(densXNW)
+densPNW<-as.data.frame(modDAtimePNW$prediction$ypredMu)
+densPNW$plotyear<-row.names(densPNW)
+
+densXXX$treat<-"XXX"
+densXXW$treat<-"XXW"
+densPXW$treat<-"PXW"
+densXNW$treat<-"XNW"
+densPNW$treat<-"PNW"
+
+dens<-rbind(densXXX, densXXW, densXNW, densPXW, densPNW)
+dens<-separate(dens, plotyear, into = c("plot", "year"), sep = "-")
+dens<-pivot_longer(dens, c("DOM", "SUBDOM", "MODERATE", "RARE"), 
+                   names_to="group",values_to="ypredMu" )
+dens<-mutate(dens,group = factor(group, 
+                              levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
+
+#all years
+ggplot(dens, aes(x=ypredMu, fill=group))+ geom_density(alpha=0.5)+
+  facet_wrap(~treat)+ theme_bw()+scale_fill_manual(values = specColor)
+
+#calculate final/initial ypred ratios 
+densfinal<-filter(dens, year==15)%>%group_by(group, treat)%>%
+  summarise(ypredMuF=mean(ypredMu))
+densinit<-filter(dens, year==1)%>%group_by(group, treat)%>%
+  summarise(ypredMu=mean(ypredMu))
+densX<-left_join(densinit, densfinal)%>%mutate(ratiopred=ypredmuF/ypredMu)
+
+
+#OLD----
 #Competition ratios----
 #DOM
 #XXX
@@ -493,56 +440,4 @@ ggplot(alphasall, aes(y=log(intra_inter_res), fill=treat))+ geom_boxplot( )+
   theme_classic()+ ylab("Interspecific competition")+
   xlab(" ")+ theme(axis.text.x=element_blank(),
                    axis.ticks.x=element_blank()) +ggtitle("Dominant species")
-
-#Supplementary table alphas 
-
-alphasXXX<-modDAtimeXXX$parameters$alphaTable%>%
-  mutate(treat="XXX")
-alphasXXW<-modDAtimeXXW$parameters$alphaTable%>%
-  mutate(treat="XXW")
-alphasXNW<-modDAtimeXNW$parameters$alphaTable%>%
-  mutate(treat="XNW")
-alphasPXW<-modDAtimePXW$parameters$alphaTable%>%
-  mutate(treat="PXW")
-alphasPNW<-modDAtimePNW$parameters$alphaTable%>%
-  mutate(treat="PNW")
-alphas_table<-rbind(alphasXXX,alphasXXW, alphasXNW, alphasPXW, alphasPNW)
-write.csv(alphas_table, "supp_table_alphas.csv")
-
-#Fig S6
-#supplementary density plots 
-densXXX<-as.data.frame(modDAtimeXXX$prediction$ypredMu)
-densXXX$plotyear<-row.names(densXXX)
-densXXW<-as.data.frame(modDAtimeXXW$prediction$ypredMu)
-densXXW$plotyear<-row.names(densXXW)
-densPXW<-as.data.frame(modDAtimePXW$prediction$ypredMu)
-densPXW$plotyear<-row.names(densPXW)
-densXNW<-as.data.frame(modDAtimeXNW$prediction$ypredMu)
-densXNW$plotyear<-row.names(densXNW)
-densPNW<-as.data.frame(modDAtimePNW$prediction$ypredMu)
-densPNW$plotyear<-row.names(densPNW)
-
-densXXX$treat<-"XXX"
-densXXW$treat<-"XXW"
-densPXW$treat<-"PXW"
-densXNW$treat<-"XNW"
-densPNW$treat<-"PNW"
-
-dens<-rbind(densXXX, densXXW, densXNW, densPXW, densPNW)
-dens<-separate(dens, plotyear, into = c("plot", "year"), sep = "-")
-dens<-pivot_longer(dens, c("DOM", "SUBDOM", "MODERATE", "RARE"), 
-                   names_to="group",values_to="ypredMu" )
-dens<-mutate(dens,group = factor(group, 
-                              levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
-
-#all years
-ggplot(dens, aes(x=ypredMu, fill=group))+ geom_density(alpha=0.5)+
-  facet_wrap(~treat)+ theme_bw()+scale_fill_manual(values = specColor)
-
-#calculate final/initial ypred ratios 
-densfinal<-filter(dens, year==15)%>%group_by(group, treat)%>%
-  summarise(ypredMuF=mean(ypredMu))
-densinit<-filter(dens, year==1)%>%group_by(group, treat)%>%
-  summarise(ypredMu=mean(ypredMu))
-densX<-left_join(densinit, densfinal)%>%mutate(ratiopred=ypredmuF/ypredMu)
 
