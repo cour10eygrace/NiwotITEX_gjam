@@ -9,14 +9,14 @@ library(bayestestR)
 #rhos---- 
 #XXX
 load(file = "outputs/modDAtime_XXXoutput_dom.RData")
-rhosXXX<-as.data.frame(modDAtimeXXX$parameters$rhoTable)
+rhosXXX<-as.data.frame(modDAtimeXXX$parameters$rhoStandXTable)
 rhosXXX<-separate(rhosXXX, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXXX$treat<-"XXX"
 
 
 #XXW
 load(file = "outputs/modDAtime_XXWoutput_dom.RData")
-rhosXXW<-as.data.frame(modDAtimeXXW$parameters$rhoTable)
+rhosXXW<-as.data.frame(modDAtimeXXW$parameters$rhoStandXTable)
 rhosXXW<-separate(rhosXXW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXXW$treat<-"XXW"
 
@@ -37,19 +37,19 @@ rhosXXW$treat<-"XXW"
 
 #XNW
 load(file = "outputs/modDAtime_XNWoutput_dom.RData")
-rhosXNW<-as.data.frame(modDAtimeXNW$parameters$rhoTable)
+rhosXNW<-as.data.frame(modDAtimeXNW$parameters$rhoStandXTable)
 rhosXNW<-separate(rhosXNW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXNW$treat<-"XNW"
 
 #PXW
 load(file = "outputs/modDAtime_PXWoutput_dom.RData")
-rhosPXW<-as.data.frame(modDAtimePXW$parameters$rhoTable)
+rhosPXW<-as.data.frame(modDAtimePXW$parameters$rhoStandXTable)
 rhosPXW<-separate(rhosPXW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosPXW$treat<-"PXW"
 
 #PNW
 load(file = "outputs/modDAtime_PNWoutput_dom.RData")
-rhosPNW<-as.data.frame(modDAtimePNW$parameters$rhoTable)
+rhosPNW<-as.data.frame(modDAtimePNW$parameters$rhoStandXTable)
 rhosPNW<-separate(rhosPNW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosPNW$treat<-"PNW"
 
@@ -512,10 +512,16 @@ write.csv(alphas_table, "supp_table_alphas.csv")
 #Fig S6
 #supplementary density plots 
 densXXX<-as.data.frame(modDAtimeXXX$prediction$ypredMu)
+densXXX$plotyear<-row.names(densXXX)
 densXXW<-as.data.frame(modDAtimeXXW$prediction$ypredMu)
+densXXW$plotyear<-row.names(densXXW)
 densPXW<-as.data.frame(modDAtimePXW$prediction$ypredMu)
+densPXW$plotyear<-row.names(densPXW)
 densXNW<-as.data.frame(modDAtimeXNW$prediction$ypredMu)
+densXNW$plotyear<-row.names(densXNW)
 densPNW<-as.data.frame(modDAtimePNW$prediction$ypredMu)
+densPNW$plotyear<-row.names(densPNW)
+
 densXXX$treat<-"XXX"
 densXXW$treat<-"XXW"
 densPXW$treat<-"PXW"
@@ -523,13 +529,20 @@ densXNW$treat<-"XNW"
 densPNW$treat<-"PNW"
 
 dens<-rbind(densXXX, densXXW, densXNW, densPXW, densPNW)
+dens<-separate(dens, plotyear, into = c("plot", "year"), sep = "-")
 dens<-pivot_longer(dens, c("DOM", "SUBDOM", "MODERATE", "RARE"), 
                    names_to="group",values_to="ypredMu" )
 dens<-mutate(dens,group = factor(group, 
                               levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
 
-
+#all years
 ggplot(dens, aes(x=ypredMu, fill=group))+ geom_density(alpha=0.5)+
-  facet_wrap(~treat)+ theme_bw()+scale_fill_manual(values = specColor)+
-  xlim(0,100)
-  
+  facet_wrap(~treat)+ theme_bw()+scale_fill_manual(values = specColor)
+
+#calculate final/initial ypred ratios 
+densfinal<-filter(dens, year==15)%>%group_by(group, treat)%>%
+  summarise(ypredMuF=mean(ypredMu))
+densinit<-filter(dens, year==1)%>%group_by(group, treat)%>%
+  summarise(ypredMu=mean(ypredMu))
+densX<-left_join(densinit, densfinal)%>%mutate(ratiopred=ypredmuF/ypredMu)
+
