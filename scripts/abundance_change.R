@@ -71,6 +71,26 @@ ggplot(data=spp_abund, aes(x = as.factor(year), y = spp_hits, color = group)) +
   #geom_smooth(method = "loess", se = FALSE) +
   facet_wrap(~ code) +theme_bw() +  scale_color_manual(values=plotcol)
 
+#Were rare spp lost/gained over time? 
+rarespp<<-subset(spp_abund, group=="RARE")
+ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, y = spp_hits, color = code)) +
+  geom_point() +
+  #geom_line()+
+  #geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~ spp) +theme_bw() +  scale_color_manual(values=plotcol)
+
+#decent coverage
+rarespp<- mutate(rarespp, vrare=if_else(spp_hits>3, 1,0))%>%group_by(spp)%>%mutate(vrare=sum(vrare))
+                                        
+ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"&vrare>0&spp!="JUN_SP"), aes(x = year, y = spp_hits, color = code)) +
+  geom_point() +
+  #geom_line()+
+  #geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~ spp) +theme_bw() +  scale_color_manual(values=plotcol)+ylab("hits")
+
+
 #CODYN change over time 
 #wrt 2006 for each time point 
 spp_change<-abundance_change(df = spp_abund,

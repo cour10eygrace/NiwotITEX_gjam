@@ -67,6 +67,7 @@ specColor <- c(
 )
 
 #reorder groups by dominance to match gjam output 
+#Table 2
 rhosall<-mutate(rhosall,group = factor(group, 
       levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
 
