@@ -55,6 +55,8 @@ spp_abund<-mutate(spp_abund, group=case_when(spp=="DESCAE"~"DOM",
                                              spp=="ARTSCO"|spp=="GEUROS"|spp=="CARSCO"~"SUBDOM", 
                                              spp=="CALLEP"|spp=="BISBIS"|spp=="TRIPAR"|spp=="GENALG"~"MODERATE", 
                                              TRUE~"RARE"))
+spp_abundx<-subset(spp_abund,code!="XNX"&code!="PNX"& code!="PXX")
+unique(spp_abundx$spp)#47 spp 
 
 ggplot(data=spp_abund, aes(x = year, y = spp_hits, color = group)) +
   geom_point() +
@@ -73,6 +75,7 @@ ggplot(data=spp_abund, aes(x = as.factor(year), y = spp_hits, color = group)) +
 
 #Were rare spp lost/gained over time? 
 rarespp<<-subset(spp_abund, group=="RARE")
+#all rare spp 
 ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, y = spp_hits, color = code)) +
   geom_point() +
   #geom_line()+
@@ -80,7 +83,7 @@ ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, 
   geom_smooth(method = "lm", se = FALSE) +
   facet_wrap(~ spp) +theme_bw() +  scale_color_manual(values=plotcol)
 
-#decent coverage
+#spp w decent coverage
 rarespp<- mutate(rarespp, vrare=if_else(spp_hits>3, 1,0))%>%group_by(spp)%>%mutate(vrare=sum(vrare))
                                         
 ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"&vrare>0&spp!="JUN_SP"), aes(x = year, y = spp_hits, color = code)) +
