@@ -49,14 +49,27 @@ spp_abund <- left_join(spp_abund, select(sppcomp, plot,block, code,snow, N, temp
   distinct(.) %>%
   unite(plotyear, plot, year, remove = F)
 
+#from gjamTimeXXX_dom.R
+rare<-group_by(sppcomp, spp)%>%count()
+rare<-mutate(rare, plotyears_perc=n/720)
+#top 8 spp are in >85% of plot years, remaining spp are in less than half (max=47%)
+
+#look at total abundance in first 5 years (early experiment only)
+#calculate average hits per plot 
+rarey5<-subset(sppcomp, year<2011)%>%group_by(spp)%>%
+  summarise(sum_hits=sum(hits))%>%mutate(avg_hits=sum_hits/240)
+raremiss<-anti_join(rare, rarey5)
+
 #plot raw cover over time 
 #break up into abundance groups 
-spp_abund<-mutate(spp_abund, group=case_when(spp=="DESCAE"~"DOM",
+
+spp_abund<-#filter(spp_abund, !spp %in% raremiss$spp)%>%# filter out rare spp not present in first 5 years
+  mutate(spp_abund, group=case_when(spp=="DESCAE"~"DOM",
                                              spp=="ARTSCO"|spp=="GEUROS"|spp=="CARSCO"~"SUBDOM", 
                                              spp=="CALLEP"|spp=="BISBIS"|spp=="TRIPAR"|spp=="GENALG"~"MODERATE", 
                                              TRUE~"RARE"))
 spp_abundx<-subset(spp_abund,code!="XNX"&code!="PNX"& code!="PXX")
-unique(spp_abundx$spp)#47 spp 
+unique(spp_abundx$spp)#47 spp (all years) #34 spp (y1-5)
 
 ggplot(data=spp_abund, aes(x = year, y = spp_hits, color = group)) +
   geom_point() +
@@ -113,7 +126,7 @@ spp_change<-mutate(spp_change, group=case_when(spp=="DESCAE"~"DOM",
 #plot
 ggplot(data=spp_change, aes(x =year2, y=change, color=group))+
   #geom_point(aes(x =year2, y=change, color=group)) + theme_classic()+  
-  geom_smooth(se=T)+ylab("cover change from year 1")+ xlab("year")+
+  geom_smooth(se=T)+ylab("cover change from pre-treatment")+ xlab("year")+
   facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
 
 ggplot(data=spp_change, aes(x =year2, y=change, color=group))+
@@ -161,6 +174,7 @@ delta_abund<-lm(change~0+ group:years:code,group_change)
 summary(delta_abund)
 
 #singularity with random effect of plot-level the change is calculated at
+#group_change<-subset(group_change, code!="XNX"&code!="PNX"& code!="PXX") #runs singular fit but results same
 delta_abundx<-lmer(change~0+ group:years:code +(1|plot), group_change, 
 control = lmerControl(optimizer= "optimx", optCtrl  = list(method="nlminb")))
 summary(delta_abundx)
@@ -330,7 +344,6 @@ ggplot(data=newdat, aes(x =year2, y=change, color=group))+
   ylab("cover change from year 1")+ xlab("year")+
   facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
 
-
 #try with scales="free"
 #with fixed effects uncertainty only 
 ggplot(data=newdat, aes(x =year2, y=change, color=group))+
@@ -375,24 +388,9 @@ newdat<-mutate(newdat, group = factor(group,
 
 ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, y=change, color=group))+
   geom_line(aes(y=distance))+
-  geom_ribbon( aes(ymin = plo, ymax =  phi, color= group), alpha = .15) +
+  geom_ribbon( aes(ymin = plo, ymax =  phi, fill= group), alpha = .5, colour=NA) +
   geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
   #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
-  ylab("cover change from year 1")+ xlab("year")+
-  facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
+  ylab("Cover change from pre-treatment")+ xlab("year")+
+  facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)+ scale_fill_manual(values=plotcol)
 
-ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, y=change, color=group))+
-  geom_line(aes(y=distance))+
-  geom_ribbon( aes(ymin = tlo, ymax =  thi, color= group), alpha = .15) +
-  geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
-  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
-  ylab("cover change from year 1")+ xlab("year")+
-  facet_wrap(~ code, scales="free") +theme_bw()+ scale_color_manual(values=plotcol)
-
-ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"),
-       aes(x =as.factor(year2), y=change, color=group))+
-  geom_boxplot()+
-  #geom_ribbon( aes(ymin = tlo, ymax =  thi, color= group), alpha = .15) +
-  #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
-  ylab("cover change from year 1")+ xlab("year")+
-  facet_wrap(~ code, scales="free") +theme_bw()+ scale_color_manual(values=plotcol)
