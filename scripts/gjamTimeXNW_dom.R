@@ -1,98 +1,8 @@
-# load packages
-library(gjam)
-library(devtools)
-library(dplyr)
-library(tidyr)
-library(repmis)
-library(corrplot)
-library(ggplot2)
-library(lme4)
-library(lmerTest)
-#gjam time supplemental functions
-d <- "https://github.com/jimclarkatduke/gjam/blob/master/gjamTimeFunctions.R?raw=True"
-source_url(d)
-#load environmental Rdata 
-load(file="data/Enviro.Rdata")
+rm(list=ls()) #clear the console 
+#pull in gjamTime inputs spp counts, enviro data 
+source('scripts/gjamTime_setup.R')
 
-#NWT species counts----
-#all years-QA/QC JGS 12/18/20
-sppcomp <- read.csv("data/NWT_ITEX_SpComp_data_L1.csv")
-sppcomp<-filter(sppcomp, !is.na(year))#remove spaces 
-sppcomp<-rename(sppcomp, spp=JGS_code)%>%unite(., plotyear, plot, year, remove=F)
-
-#make full enviro matrix for filling NAs later 
-plotyears<-select(sppcomp, year, plot, snow, N, temp, block)%>%distinct(.)
-enviro$block<-as.numeric(enviro$block)
-enviro<-rename(enviro, snow=snow_trt)
-
-enviro_all<-left_join(enviro, plotyears)%>%
-  distinct(.) #check only 720 
-
-# calculate species hits and relative abundance within each plot x year
-spp_abund<-sppcomp %>%group_by(year, plot, spp) %>% 
-  summarise(spp_hits=sum(hits))%>%
-  group_by(., year, plot, .drop = FALSE) %>%
-  mutate(veg_hits=sum(spp_hits))%>%
-  mutate(rel_abund=(spp_hits/veg_hits)*100)%>%
-  unite(., plotyear, plot, year, remove=F)#%>%
-
-#calculate total plot hits before removing non-vascular  
-plothits<-select(spp_abund%>%ungroup(), veg_hits, plotyear, year)%>%distinct(.)
-
-#remove non-vascular plants and Salix glauca transplants 
-sppcomp <- subset(sppcomp, spp != "bare" & spp != "litter" & spp != "moss" & spp != "lichen" &
-                    spp != "rock" & spp != "FORB_SP1" & spp != "SALGLA")
-
-#look at distribution of spp coverage over time 
-rare<-group_by(sppcomp, spp)%>%count()
-rare<-mutate(rare, plotyears_perc=n/720)
-#top 8 spp are in >85% of plot years, remaining spp are in less than half (max=47%)
-
-#Munge spp comp data 
-# calculate species hits and relative abundance within each plot x year
-spp_abund<-sppcomp %>%group_by(year, plot, spp) %>% 
-  summarise(spp_hits=sum(hits))%>%
-  group_by(., year, plot, .drop = FALSE) %>%
-  mutate(veg_hits=sum(spp_hits))%>%
-  mutate(rel_abund=(spp_hits/veg_hits)*100)%>%
-  unite(., plotyear, plot, year, remove=F)#%>%
-
-# make spp_hits wide and fill in zeroes-censor with total hits in effort 
-spp_abundw <- select(spp_abund, -veg_hits, -rel_abund)%>%
-  pivot_wider(names_from = spp, values_from = spp_hits) %>%
-  mutate_all(funs(replace(., is.na(.), 0))) # replace NAs with zeroes
-
-# group into 4 dominance categories Desc=Dom, Artsco, Geum, Carsco=SubDom, Callep, Tripar, Bisbis, 
-# Genalg=moderate, rest=rare (based on hits in XXX plots-check for values )
-spp_abundw<-relocate(spp_abundw, CASOCC, .after = TRIPAR)
-spp_abundw<-relocate(spp_abundw, STELON, .after = TRIPAR)
-spp_abundw<-relocate(spp_abundw, STELON, .after = TRIPAR)
-spp_abundw<-rowwise(spp_abundw)%>%mutate(RARE=sum(c_across(STELON:TAROFF)))
-spp_abundw<-select(spp_abundw, ARTSCO, BISBIS, CALLEP, CARSCO, DESCAE,
-                   GENALG,GEUROS, TRIPAR, RARE)
-spp_abundw<-relocate(spp_abundw, GEUROS, .after = ARTSCO)
-spp_abundw<-relocate(spp_abundw, CALLEP, .after = TRIPAR)
-spp_abundw<-relocate(spp_abundw, BISBIS, .after = TRIPAR)
-spp_abundw<-rowwise(spp_abundw)%>%mutate(SUBDOM=sum(c_across(ARTSCO:CARSCO)))
-spp_abundw<-rowwise(spp_abundw)%>%mutate(MODERATE=sum(c_across(GENALG:CALLEP)))
-spp_abundw<-select(spp_abundw, DESCAE, SUBDOM, MODERATE, RARE, year, plot)%>%rename(DOM=DESCAE)
-
-# doesn't like underscores in spp names
-names(spp_abundw)
-
-# add treatment codes back in
-spp_abundw <- left_join(spp_abundw, select(sppcomp, plot,block, snow, N, temp)) %>%
-  distinct(.) %>%
-  unite(plotyear, plot, year, remove = F)
-
-
-#Gjam set up----
-#combine spp data with enviro data
-xdata <- as.data.frame(select(spp_abundw, plot, block, year, snow, N, temp))
-#xdata$block<-as.character(xdata$block)
-xdata_all<-full_join(xdata, enviro)
-
-
+#run gjamTime by treatment 
 #XNW----
 #cumulative N 
 xdata<-select(xdata_all, plot, year, depth_cm, NdepCum,avgT)%>%
@@ -203,7 +113,7 @@ timeList <- mergeList(tlist, tmp)
 
 # run model
 modelList <- list(
-  typeNames = "DA", ng = 6000, burnin =1000,
+  typeNames = "DA", ng = 10000, burnin =2000,
   timeList = timeList, effort = effort
 )
 
