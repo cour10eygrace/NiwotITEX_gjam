@@ -50,26 +50,26 @@ spp_abund <- left_join(spp_abund, select(sppcomp, plot,block, code,snow, N, temp
   unite(plotyear, plot, year, remove = F)
 
 #from gjamTimeXXX_dom.R
-rare<-group_by(sppcomp, spp)%>%count()
+rare<-subset(sppcomp, code=="XXX")%>%group_by(spp)%>%count()
 rare<-mutate(rare, plotyears_perc=n/720)
 #top 8 spp are in >85% of plot years, remaining spp are in less than half (max=47%)
 
-#look at total abundance in first 5 years (early experiment only)
+#look at total abundance in control plots over time to decide dominance categories 
 #calculate average hits per plot 
-rarey5<-subset(sppcomp, year<2011)%>%group_by(spp)%>%
-  summarise(sum_hits=sum(hits))%>%mutate(avg_hits=sum_hits/240)
-raremiss<-anti_join(rare, rarey5)
+#remove species with less than 20 total hits (observations) across time period 
+rarectl<-subset(sppcomp, code=="XXX")%>%group_by(spp)%>%
+  summarise(sum_hits=sum(hits))%>%mutate(avg_hits=sum_hits/90)%>%filter(sum_hits>20)
 
 #plot raw cover over time 
 #break up into abundance groups 
 
-spp_abund<-#filter(spp_abund, !spp %in% raremiss$spp)%>%# filter out rare spp not present in first 5 years
-  mutate(spp_abund, group=case_when(spp=="DESCAE"~"DOM",
+spp_abund<-filter(spp_abund, spp %in% rarectl$spp)%>%# filter out rare spp (<20 hits)
+  mutate(group=case_when(spp=="DESCAE"~"DOM",
                                              spp=="ARTSCO"|spp=="GEUROS"|spp=="CARSCO"~"SUBDOM", 
                                              spp=="CALLEP"|spp=="BISBIS"|spp=="TRIPAR"|spp=="GENALG"~"MODERATE", 
                                              TRUE~"RARE"))
 spp_abundx<-subset(spp_abund,code!="XNX"&code!="PNX"& code!="PXX")
-unique(spp_abundx$spp)#47 spp (all years) #34 spp (y1-5)
+unique(spp_abundx$spp)
 
 ggplot(data=spp_abund, aes(x = year, y = spp_hits, color = group)) +
   geom_point() +
@@ -88,13 +88,6 @@ ggplot(data=spp_abund, aes(x = as.factor(year), y = spp_hits, color = group)) +
 
 #Were rare spp lost/gained over time? 
 rarespp<<-subset(spp_abund, group=="RARE")
-#all rare spp 
-ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, y = spp_hits, color = code)) +
-  geom_point() +
-  #geom_line()+
-  #geom_smooth(method = "lm", se = FALSE) +
-  geom_smooth(method = "lm", se = FALSE) +
-  facet_wrap(~ spp) +theme_bw() +  scale_color_manual(values=plotcol)
 
 #spp w decent coverage
 rarespp<- mutate(rarespp, vrare=if_else(spp_hits>3, 1,0))%>%group_by(spp)%>%mutate(vrare=sum(vrare))
@@ -105,6 +98,19 @@ ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"&vrare>0&spp!="JU
   #geom_smooth(method = "lm", se = FALSE) +
   geom_smooth(method = "lm", se = FALSE) +
   facet_wrap(~ spp) +theme_bw() +  scale_color_manual(values=plotcol)+ylab("hits")
+
+
+#FIG S2-PLOT RAW HITS OF ALL SPP IN GJAMTIME MODEL 
+#all spp 
+spp_abund<-mutate(spp_abund,group = factor(group, 
+                                           levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
+ggplot(data=subset(spp_abund,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, y = log(spp_hits), color = code)) +
+  geom_point() +
+  #geom_line()+
+  #geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = F) +
+  facet_wrap(group~spp) +theme_bw() +  scale_color_manual(values=plotcol)
+
 
 
 #CODYN change over time 
@@ -139,7 +145,7 @@ ggplot(data=spp_change, aes(x =year2, y=change, color=group))+
 #BY GROUPS 
 #CODYN change over time 
 #wrt 2006 for each time point 
-group_abund<-group_by(spp_abund, group, plot, year)%>%
+group_abund<-group_by(spp_abundx, group, plot, year)%>%
   mutate(group_hits=sum(spp_hits))%>%
   select(group, plot, year, group_hits)%>%distinct(.)
 
@@ -388,7 +394,7 @@ newdat<-mutate(newdat, group = factor(group,
 
 ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, y=change, color=group))+
   geom_line(aes(y=distance))+
-  geom_ribbon( aes(ymin = plo, ymax =  phi, fill= group), alpha = .5, colour=NA) +
+  geom_ribbon( aes(ymin = plo, ymax =  phi, fill= group), alpha = .25, colour=NA) +
   geom_point(aes(x =year2, y=change, color=group), alpha=0.5) + theme_classic()+  
   #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
   ylab("Cover change from pre-treatment")+ xlab("year")+
