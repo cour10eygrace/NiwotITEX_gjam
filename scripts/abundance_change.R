@@ -180,7 +180,7 @@ summary(delta_abundx)
 coeffs<-summary(delta_abundx)
 coeffs<-as.data.frame(coeffs$coefficients)
 coeffs$grouptreat<-row.names(coeffs)
-#write.csv(coeffs, "table1.csv")#Table 1
+#write.csv(coeffs, "tables/table1.csv")#Table 1
 
 coeffs<-separate(coeffs, grouptreat, c('group', 'x', 'treat'))%>%
   rename(pval=`Pr(>|t|)`)%>%select(-x)
