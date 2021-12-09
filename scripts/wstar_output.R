@@ -74,8 +74,9 @@ a<-ggplot(wstarxxw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+
   #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
   facet_wrap(~group, scales ="free")+ theme_classic()+scale_color_manual(values=color2)+
   theme(strip.background = element_blank(),
-        strip.text.x = element_blank())+ ylab("Steady State abundance") + xlab("N deposition (std devs)")
-
+        strip.text.x = element_blank())+ ylab("Steady State abundance") + xlab("N deposition (std devs)")+
+  ggtitle("Warming")
+  
 
 #XNW----
 load(file = "outputs/wstar_XNWoutput_dom.RData")
@@ -102,9 +103,10 @@ b<-ggplot(wstarxnw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+
   #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
   facet_wrap(~group, scales ="free")+ theme_classic()+ scale_color_manual(values=color2)+
   theme(strip.background = element_blank(),
-      strip.text.x = element_blank())+  ylab(" ") + xlab(" ")
+      strip.text.x = element_blank())+  ylab(" ") +xlab("N deposition (std devs)")+
+  ggtitle("N + Warming")
 
-ggplot(wstarxnw, aes(x=avgT, y=mu, col=group)) + geom_point(alpha=0.25)+ 
+ggplot(wstarxnw, aes(x=avgT, y=mu, col=group)) + geom_point(alpha=0.1)+ 
   geom_smooth(se = T, lty=2)+
   #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
   facet_wrap(~group, scales ="free")+ theme_classic()+ scale_color_manual(values=color2)+
@@ -134,7 +136,15 @@ wstarpxw<-arrange(wstarpxw,group)%>%
 wstarpxw<-cbind(wstarpxw, env)
 
 #plots
-#plot raw data-don't know how to get sds in there 
+#plot raw data-
+c<-ggplot(wstarpxw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+ 
+  geom_smooth(se = T, lty=2)+
+  #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
+  facet_wrap(~group, scales ="free")+ theme_classic()+ scale_color_manual(values=color2)+
+  theme(strip.background = element_blank(),
+        strip.text.x = element_blank())+  ylab(" ") + xlab(" ")+
+  ggtitle("Snow + Warming") 
+
 ggplot(wstarpxw, aes(x=depthcm, y=mu, col=group)) + geom_point(alpha=0.25)+ 
   geom_smooth(se = T, lty=2)+
   #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
@@ -152,21 +162,32 @@ ggplot(wstarpxw, aes(x=avgT, y=mu, col=group)) + geom_point(alpha=0.25)+
 
 
 #PNW----
-load(file = "outputs/wstar_PNWoutput.RData")
-
+load(file = "outputs/wstar_PNWoutput_dom.RData")
 #pull out of lists 
 wstarmu<-as.data.frame(wstarPNW$ccMu)%>%
-  pivot_longer(. , cols=everything(),names_to="spp", 
+  pivot_longer(. , cols=everything(),names_to="group", 
                values_to="mu")
 wstarsd<-as.data.frame(wstarPNW$ccSd)%>%
-  pivot_longer(. , cols=everything(),names_to="spp", 
+  pivot_longer(. , cols=everything(),names_to="group", 
                values_to="sd")
 env<-as.data.frame(wstarPNW$x)
 
 #combine into one df
-wstarpnw<-cbind(wstarmu, select(wstarsd, -spp))
-wstarpnw<-arrange(wstarpnw, spp)#rearrange by spp
+wstarpnw<-cbind(wstarmu, select(wstarsd, -group))
+wstarpnw<-arrange(wstarpnw,group)%>% 
+  mutate(group = factor(group, levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
 wstarpnw<-cbind(wstarpnw, env)
+
+d<-ggplot(wstarpnw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+ 
+  geom_smooth(se = T, lty=2)+
+  #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
+  facet_wrap(~group, scales ="free")+ theme_classic()+ scale_color_manual(values=color2)+
+  theme(strip.background = element_blank(),
+        strip.text.x = element_blank())+  ylab(" Steady State abundance") + xlab(" ")+
+  ggtitle("Snow + N+ Warming") 
+
+#Fig S9
+ggpubr::ggarrange(d, c, b, a, common.legend = TRUE,  ncol = 2, nrow = 2)
 
 #plots
 #plot raw data-don't know how to get sds in there 
