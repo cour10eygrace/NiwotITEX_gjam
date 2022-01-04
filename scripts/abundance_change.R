@@ -51,10 +51,18 @@ spp_abund <- left_join(spp_abund, select(sppcomp, plot,block, code,snow, N, temp
   unite(plotyear, plot, year, remove = F)
 
 #look at total abundance in control plots over time to decide dominance categories 
-#calculate average hits per plot 
+#calculate average hits per plot (6 plos * 15 years= 90)
 #remove species with less than 20 total hits (observations) across time period 
-rarectl<-subset(sppcomp, code=="XXX")%>%group_by(spp)%>%
+rarectl<-subset(sppcomp, code=="XXX")%>%group_by(spp)%>% #mutate(sd_hits=sd(hits))%>%
   summarise(sum_hits=sum(hits))%>%mutate(avg_hits=sum_hits/90)%>%filter(sum_hits>20)
+std_mean <- function(x) sd(x)/sqrt(length(x))
+rarectl2<-subset(sppcomp, code=="XXX")%>%group_by(spp)%>% summarise(sd_hits=sd(hits), se_hits=std_mean(hits))%>%filter(spp %in% rarectl$spp)
+rarectl<-left_join(rarectl, rarectl2)  
+rarectl<-  mutate(rarectl, group=case_when(spp=="DESCAE"~"DOM",
+                                  spp=="ARTSCO"|spp=="GEUROS"|spp=="CARSCO"~"SUBDOM", 
+                                  spp=="CALLEP"|spp=="BISBIS"|spp=="TRIPAR"|spp=="GENALG"~"MODERATE", 
+                                  TRUE~"RARE"))%>%group_by(group)%>%mutate(group_avg=mean(avg_hits), 
+                                                                           group_se=mean(se_hits))
 
 #plot raw cover over time 
 #break up into abundance groups 
