@@ -111,7 +111,7 @@ modDAtimeXXX<- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, m
 
 # save output
 save(modDAtimeXXX, file = "outputs/modDAtime_XXXoutput_dom.RData")
-load(file = "outputs/modDAtime_XXXoutput_dom.RData")
+#load(file = "outputs/modDAtime_XXXoutput_dom.RData")
 
 # plot output
 specColor <- c(
