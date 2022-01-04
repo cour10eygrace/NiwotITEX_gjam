@@ -33,12 +33,14 @@ ggplot(wstarxxx, aes(x=depthcm, y=mu, col=group)) + geom_point(alpha=0.2)+
   theme(strip.background = element_blank(), legend.position = 'none',
     strip.text.x = element_blank())+ ylab("Steady State abundance") + xlab("Snow depth (std devs)")
   
-ggplot(wstarxxx, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.2)+ 
+e<-ggplot(wstarxxx, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.2)+ 
   geom_smooth(se = T, lty=2)+
   #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
-  facet_wrap(~group, scales ="free")+ theme_classic()+
+  facet_wrap(~group, scales ="free")+ theme_classic()+scale_color_manual(values=color2)+
   theme(strip.background = element_blank(), legend.position = 'none',
-        strip.text.x = element_blank())+ ylab("Steady State abundance") + xlab("N deposition (std devs)")
+        strip.text.x = element_blank())+ ylab("Steady State abundance") + xlab("N deposition (std devs)")+
+  ggtitle("Control")
+
 
 ggplot(wstarxxx, aes(x=avgT, y=mu, col=group)) + geom_point(alpha=0.2)+ 
   geom_smooth(se = T, lty=2)+
@@ -46,7 +48,6 @@ ggplot(wstarxxx, aes(x=avgT, y=mu, col=group)) + geom_point(alpha=0.2)+
   facet_wrap(~group, scales ="free")+ theme_classic()+
   theme(strip.background = element_blank(), legend.position = 'none',
         strip.text.x = element_blank())+ ylab("Steady State abundance") + xlab("Temperature (std devs)")
-
 
 #XXW----
 load(file = "outputs/wstar_XXWoutput_dom.RData")
@@ -187,7 +188,7 @@ d<-ggplot(wstarpnw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+
   ggtitle("Snow + N+ Warming") 
 
 #Fig S9
-ggpubr::ggarrange(d, c, b, a, common.legend = TRUE,  ncol = 2, nrow = 2)
+ggpubr::ggarrange(d, c, b, a, e, common.legend = TRUE,  legend= "none", ncol = 3, nrow = 2)
 
 #plots
 #plot raw data-don't know how to get sds in there 
