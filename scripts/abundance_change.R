@@ -183,6 +183,44 @@ control = lmerControl(optimizer= "optimx", optCtrl  = list(method="nlminb")))
 summary(delta_abundx)
 #https://stats.stackexchange.com/questions/138464/identical-ses-for-all-slopes-in-a-regression-on-a-factor
 
+#diagnostics
+plot(delta_abundx)#looks good 
+qqnorm(residuals(delta_abundx))#looks good 
+plot(delta_abundx, 5)#looks good 
+
+#color by years
+plot(delta_abundx, resid(., scaled=TRUE) ~ fitted(.), 
+     abline = 0,col=group_change$years, xlab="Fitted values",ylab="Standardised residuals")
+plot(delta_abundx, resid(., scaled=TRUE) ~ fitted(.), 
+     abline = 0,col=group_change$year2, xlab="Fitted values",ylab="Standardised residuals")
+
+mean(group_change$change)
+sd(group_change$change)
+
+#residuals by predictor 
+#years
+ggplot(data.frame(x1=group_change$years,p.resid=residuals(delta_abundx,type="pearson")),
+       aes(x=x1,y=p.resid)) +
+  geom_point() +
+  theme_bw()
+#code
+ggplot(data.frame(x1=group_change$code,p.resid=residuals(delta_abundx,type="pearson")),
+       aes(x=x1,y=p.resid)) +
+  geom_point() +
+  theme_bw()
+
+#group-uneven for rare 
+ggplot(data.frame(x1=group_change$group,p.resid=residuals(delta_abundx,type="pearson")),
+       aes(x=x1,y=p.resid)) +
+  geom_point() +
+  theme_bw()
+
+#leverage 
+lev<-hat(model.matrix(delta_abundx))
+
+#Plot leverage against standardised residuals
+plot(resid(delta_abundx,type="pearson")~lev,las=1,ylab="Standardised residuals",xlab="Leverage")
+
 
 #pull out slope coefficients and plot
 coeffs<-summary(delta_abundx)
