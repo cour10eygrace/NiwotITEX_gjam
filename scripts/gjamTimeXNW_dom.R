@@ -85,6 +85,7 @@ xdata<-rename(xdata, depthcm=depth_cm)
 alphaSign <- matrix(-1, ncol(ydata), ncol(ydata)) # set as competitors
 colnames(alphaSign) <- rownames(alphaSign) <- colnames(ydata)
 
+
 # rhoPrior is a list indicating lo and hi values for the growth rate, which is change per time increment.
 # In this example, growth rate rho only includes an intercept, because I included no predictors (Q = 0).
 # The density-independent growth rate is given a wide prior values of ±30% per time increment:
@@ -108,6 +109,12 @@ tmp$alphaPrior$lo<-lo
 hi<- matrix(0, ncol(ydata), ncol(ydata)) 
 #diag(hi)<- 0
 tmp$alphaPrior$hi<-hi
+
+#set as positive for two values estimated weakly negative- Mod, Dom & Dom, Subdom (Table S2) 
+#tmp$alphaPrior$hi[3,1]<-1
+#tmp$alphaPrior$hi[1,2]<-1
+#tmp$alphaPrior$lo[3,1]<-0
+#tmp$alphaPrior$lo[1,2]<-0
 
 timeList <- mergeList(tlist, tmp)
 
