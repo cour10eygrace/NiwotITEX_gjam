@@ -43,4 +43,4 @@ vignettes/*.pdf
 outputs/ 
 plots/
 #old scripts not using in final analyses
-OLD code/ 
+scripts/OLD code/ 
