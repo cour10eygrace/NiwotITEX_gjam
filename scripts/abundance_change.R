@@ -89,11 +89,11 @@ ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, 
   geom_point() +
   #geom_line()+
   geom_smooth(method = "lm", se = FALSE) +
- # geom_smooth( method="lm", se = FALSE) +
+  #geom_smooth( method="loess", se = FALSE) +
   facet_wrap(~ spp, scales="free") +theme_bw() +  scale_color_manual(values=plotcol)+ylab("hits")
 #some species do blink in and out of some treatments 
 
-#FIG S2-PLOT RAW HITS OF ALL SPP IN GJAMTIME MODEL 
+#FIG S2-PLOT RAW HITS OF ALL SPP IN GJAMTIME MODEL----
 #all spp 
 spp_abund<-mutate(spp_abund,group = factor(group, 
                                            levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
@@ -104,6 +104,7 @@ ggplot(data=subset(spp_abund,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year
   geom_smooth(method = "lm", se = F) +
   facet_wrap(group~spp) +theme_bw() +  scale_color_manual(values=plotcol)
 
+#CODYN functions----
 #BY SPECIES
 #CODYN change over time 
 #wrt 2006 for each time point 
@@ -142,6 +143,7 @@ group_abund<-group_by(spp_abundx, group, plot, year)%>%
   mutate(group_hits=sum(spp_hits))%>%
   select(group, plot, year, group_hits)%>%distinct(.)
 
+
 group_change<-abundance_change(df = group_abund,
                                species.var = "group",
                                abundance.var = "group_hits",
@@ -164,7 +166,7 @@ ggplot(data=group_change, aes(x =year2, y=change, color=group))+
   facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=plotcol)
 
 
-#model change over time 
+#model change over time---- 
 #spp_change<-mutate(spp_change, years=year2-2006)
 group_change<-mutate(group_change, years=year2-2006)
 
@@ -183,10 +185,9 @@ control = lmerControl(optimizer= "optimx", optCtrl  = list(method="nlminb")))
 summary(delta_abundx)
 #https://stats.stackexchange.com/questions/138464/identical-ses-for-all-slopes-in-a-regression-on-a-factor
 
-#diagnostics
+#Model diagnostics----
 plot(delta_abundx)#looks good 
 qqnorm(residuals(delta_abundx))#looks good 
-plot(delta_abundx, 5)#looks good 
 
 #color by years
 plot(delta_abundx, resid(., scaled=TRUE) ~ fitted(.), 
@@ -215,6 +216,13 @@ ggplot(data.frame(x1=group_change$group,p.resid=residuals(delta_abundx,type="pea
   geom_point() +
   theme_bw()
 
+#year2 (calendar year) 
+ggplot(data.frame(x1=group_change$year2,p.resid=residuals(delta_abundx,type="pearson")),
+       aes(x=x1,y=p.resid)) +
+  geom_point() +
+  theme_bw()
+
+
 #leverage 
 lev<-hat(model.matrix(delta_abundx))
 
@@ -222,6 +230,7 @@ lev<-hat(model.matrix(delta_abundx))
 plot(resid(delta_abundx,type="pearson")~lev,las=1,ylab="Standardised residuals",xlab="Leverage")
 
 
+#visualize results----
 #pull out slope coefficients and plot
 coeffs<-summary(delta_abundx)
 coeffs<-as.data.frame(coeffs$coefficients)
@@ -331,13 +340,13 @@ newdat = data.frame(group = group_changex$group,
 years = group_changex$years,
 code = group_changex$code, 
 year2=group_changex$year2, 
-change=group_changex$change)
+change=group_changex$change)  
 
 head(newdat)
 #predict over new data 
 newdat$distance = predict(delta_abundx, newdata = newdat, re.form=NA)
 mm <- model.matrix(terms(delta_abundx),newdat)
-## or newdat$distance <- mm %*% fixef(fm1)
+#newdat$distance <- mm %*% fixef(delta_abundx)
 pvar1 <- diag(mm %*% tcrossprod(vcov(delta_abundx),mm))
 random<-VarCorr(delta_abundx)
 tvar1 <- pvar1+random$year2  ## must be adapted for more complex models
@@ -391,7 +400,7 @@ ggplot(data=newdat, aes(x =year2, y=change, color=group))+
   facet_wrap(~ code, scales = "free") +theme_bw()+ scale_color_manual(values=plotcol)
 
 
-###Fig 1
+###Fig 1----
 newdat<-mutate(newdat, group = factor(group, 
   levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
 
@@ -402,4 +411,6 @@ ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, 
   #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
   ylab("Cover change from pre-treatment")+ xlab("year")+
   facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=color2)+ scale_fill_manual(values=color2)
+
+
 

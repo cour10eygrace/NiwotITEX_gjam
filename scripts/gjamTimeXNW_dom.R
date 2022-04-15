@@ -110,6 +110,7 @@ hi<- matrix(0, ncol(ydata), ncol(ydata))
 #diag(hi)<- 0
 tmp$alphaPrior$hi<-hi
 
+#Fig S10 
 #set as positive for two values estimated weakly negative- Mod, Dom & Dom, Subdom (Table S2) 
 #tmp$alphaPrior$hi[3,1]<-1
 #tmp$alphaPrior$hi[1,2]<-1
@@ -129,6 +130,7 @@ modDAtimeXNW<- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, m
 # save output
 save(modDAtimeXNW, file = "outputs/modDAtime_XNWoutput_dom.RData")
 #load(file = "outputs/modDAtime_XNWoutput_dom.RData")
+#load(file = "outputs/test_pos/modDAtime_XNWoutput_dom.RData") #fig S10
 
 # plot output
 specColor <- c(
