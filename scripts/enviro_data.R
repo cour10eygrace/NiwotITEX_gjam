@@ -189,6 +189,8 @@ snow_allXX<-mutate(snow_allX,
                                        snow_trt=='P' &block==3~ (coef[1]+coef[2]*avg_depth+coef[5])))
 #plot obs vs pred 
 plot(snow_allXX$depth_cm2~snow_allXX$depth_cm)
+#pearson 
+cor.test(snow_allXX$depth_cm2, snow_allXX$depth_cm) #87.4
 
 #combine all 
 snow_allXX<-mutate(snow_allXX, depth_cm=ifelse(is.na(depth_cm), depth_cm2, depth_cm))                    
@@ -209,6 +211,43 @@ depth_cm=case_when(year==2006&snow_trt=="P"&block ==1~	45.94156,
                     TRUE~depth_cm))
 ggplot(data=snow_plot, aes(x=as.factor(year), y=depth_cm, fill=snow_trt))+ 
   geom_boxplot()+ theme_bw()#looks OK
+
+#compare snow infilling 
+library(mice)
+
+#infill with mice 
+snow_allX<-arrange(snow_allX, year, month, snow_trt, block)
+
+snow_all_imp<-mice(snow_allX, m=10,  method = "pmm", maxit = 50, seed = 75)
+
+#infill missing with means of 10 imputed values 
+imp_data<-as.data.frame(snow_all_imp$imp$depth_cm)
+imp_data$imp_depth_cm<-rowMeans(imp_data)
+imp_data$ID<-row.names(imp_data)
+imp_data<-select(imp_data, ID, imp_depth_cm)
+snow_allX$ID<-row.names(snow_allX)
+snow_allY<-left_join(snow_allX, imp_data, by="ID")%>%
+  mutate(depth_cm=if_else(is.na(depth_cm), imp_depth_cm, depth_cm))
+
+#pull out model coefficients to estimate known values for comparison 
+fit<-with(data = snow_all_imp, exp=lm(depth_cm~ snow_trt + as.factor(block)))
+coef2<-summary(pool(fit))
+pool.r.squared(fit) #r2 =0.1 
+
+coef2<-coef2$estimate
+
+snow_allY<-mutate(snow_allY, 
+                  imp_depth_cm=case_when(is.na(imp_depth_cm)& snow_trt=='X' &block==1~ (coef2[1]+coef2[2]), 
+                                         is.na(imp_depth_cm)& snow_trt=='P' &block==1~ (coef2[1]),
+                                         is.na(imp_depth_cm)&snow_trt=='X' &block==2~ (coef2[1]+coef2[2]+coef2[3]), 
+                                         is.na(imp_depth_cm)& snow_trt=='P' &block==2~ (coef2[1]+coef2[3]), 
+                                         is.na(imp_depth_cm)& snow_trt=='X' &block==3~ (coef2[1]+coef2[2]+coef2[4]),
+                                         is.na(imp_depth_cm)&snow_trt=='P' &block==3~ (coef2[1]+coef2[4])))
+#  mutate(imp_depth_cm=if_else(is.na(imp_depth_cm), depth_cm, imp_depth_cm)) #refill back in original imputed
+snowmod2<-lm(depth_cm~imp_depth_cm +snow_trt + as.factor(block), snow_allY)
+summary(snowmod2)#r2=0.33
+#pearson 
+cor.test(snow_allY$depth_cm, snow_allY$imp_depth_cm)
 
 #combine all enviro data 
 str(Ndep)
