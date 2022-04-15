@@ -414,3 +414,36 @@ ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, 
 
 
 
+#Fit GAMM----
+library(ggplot2)
+library(dplyr)
+library(mgcv)
+library(tidymv)
+#with interactions
+#http://r.qcbs.ca/workshop08/book-en/gam-with-interaction-terms.html
+group_change<-mutate(group_change, group_code=interaction(group,code))
+group_change$year2<-as.factor(group_change$year2)
+
+#linear term only-gamm version of delta_abundx
+gammtest0<-mgcv::gam(change ~ 0+  group:years:code + s(year2, bs='re'), 
+                     data = group_change, method="REML")
+summary(gammtest0)#r-squared 0.47 (same as above)
+
+#smooth term only 
+gammtest<-mgcv::gam(change ~0+ s(0+ years, by = group_code) + s(year2, bs='re'), 
+                    data = group_change, method="REML")
+summary(gammtest)#r-squared low 0.095
+
+AIC(gammtest0, gammtest) #linear better 
+
+#plot fit lines 
+#https://cran.r-project.org/web/packages/tidymv/vignettes/plot-smooths.html
+plot_smooths( 
+  model = gammtest,
+  series = years,
+  comparison = group,
+  facet_terms = code,
+  split = list(group_code = c("group", "code"))
+) +
+  theme(legend.position = "top")+ theme_classic() + geom_hline(yintercept=0, lty=2, col="black")
+
