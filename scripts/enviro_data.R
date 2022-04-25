@@ -97,9 +97,11 @@ ggplot(temp, aes(x=year, y=avgT, color=temp)) + geom_point(shape=15, size=2)+
 #update for 2006 with pre-treatment value 
 temp_plot<- mutate(temp, 
   avgT=case_when(year==2006~10.239163,TRUE~avgT))
-ggplot(temp_plot, aes(x=year, y=avgT, color=temp)) + 
-  geom_point(shape=15, size=2, position=position_dodge(width=0.5))+
-  theme_bw()
+temp_plot$year2<-as.numeric(as.character(temp_plot$year))
+
+ggplot(temp_plot, aes(x=year2, y=avgT, color=temp)) + 
+  geom_point(shape=16, size=2, position=position_dodge(width=0.5))+
+  theme_bw()+ geom_line(lty=2) + xlim(2005, 2021)
 
 #Snow----
 #Munge Snow data 
