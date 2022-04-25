@@ -97,12 +97,13 @@ ggplot(data=subset(rarespp,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, 
 #all spp 
 spp_abund<-mutate(spp_abund,group = factor(group, 
                                            levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
-ggplot(data=subset(spp_abund,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, y = log(spp_hits), color = code)) +
+# plot scales with free y axis 
+ggplot(data=subset(spp_abund,code!="XNX"&code!="PNX"& code!="PXX"), aes(x = year, y = log(spp_hits)+1, color = code)) +
   geom_point() +
   #geom_line()+
   #geom_smooth(method = "lm", se = FALSE) +
   geom_smooth(method = "lm", se = F) +
-  facet_wrap(group~spp) +theme_bw() +  scale_color_manual(values=plotcol)
+  facet_wrap(group~spp, scales="free_y") +theme_bw() +  scale_color_manual(values=plotcol)
 
 #CODYN functions----
 #BY SPECIES
