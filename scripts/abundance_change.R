@@ -429,13 +429,15 @@ group_change$year2<-as.factor(group_change$year2)
 gammtest0<-mgcv::gam(change ~ 0+  group:years:code + s(year2, bs='re'), 
                      data = group_change, method="REML")
 summary(gammtest0)#r-squared 0.47 (same as above)
+MuMIn::r.squaredGLMM(delta_abundx)
+summary(delta_abundx)
 
 #smooth term only 
 gammtest<-mgcv::gam(change ~0+ s(0+ years, by = group_code) + s(year2, bs='re'), 
                     data = group_change, method="REML")
 summary(gammtest)#r-squared low 0.095
 
-AIC(gammtest0, gammtest) #linear better 
+AIC(gammtest0, gammtest, delta_abundx) #linear better 
 
 #plot fit lines 
 #https://cran.r-project.org/web/packages/tidymv/vignettes/plot-smooths.html
