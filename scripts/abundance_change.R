@@ -410,8 +410,9 @@ ggplot(data=subset(newdat, code!="XNX"&code!="PNX"& code!="PXX"), aes(x =year2, 
   geom_ribbon( aes(ymin = plo, ymax =  phi, fill= group), alpha = .25, colour=NA) +
   geom_point(aes(x =year2, y=change, color=group), alpha=0.75) + theme_classic()+  
   #geom_jitter(aes(x =year2, y=change, color=group)) + theme_classic()+  
-  ylab("Cover change from pre-treatment")+ xlab("year")+
-  facet_wrap(~ code) +theme_bw()+ scale_color_manual(values=color2)+ scale_fill_manual(values=color2)
+  ylab("Cover change from pre-treatment")+ xlab("year")+ theme_bw()+
+    facet_wrap(~ code) +theme(plot.margin=margin(1,0,0,1, 'cm'))+ 
+  scale_color_manual(values=color2)+ scale_fill_manual(values=color2)
 
 
 

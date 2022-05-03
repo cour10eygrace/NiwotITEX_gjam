@@ -161,7 +161,9 @@ d<-ggplot(subset(rhosall,group=="RARE"), aes(y=Estimate, x=treat, color=treat))+
 
 
 #Fig 2 FINAL 
-ggpubr::ggarrange(a, b, c, common.legend = TRUE,  ncol =1, nrow = 3)
+ggpubr::ggarrange(a, b, c, common.legend = TRUE,  ncol =1, nrow = 3)+
+  theme(plot.margin = margin(1,0.25,0.25,1, "cm")) 
+
 #ggpubr::ggarrange(a,b,c, d, common.legend = TRUE,  ncol = 2, nrow =2) #w/ rare spp
 
 #Fig S7-rare spp 
@@ -299,7 +301,7 @@ ggplot(subset(calc, comp!="InterEff"), aes(x = comp, y = value, fill = treat)) +
   coord_flip() +   facet_wrap(~group)+   #   theme(aspect.ratio = 1/1.25)+
   ylab("Change in competition from control")+ xlab(" ")+
   scale_fill_manual(values = c("#1C829D", "#74870D", "#AA865A", "#A98FBA"))+  #keep order from Fig 2
-  theme_classic()+
+  theme_classic()+  theme(plot.margin = margin(1,0,0.5,1, "cm")) +
   theme(strip.background = element_blank())
 
 #Supp mat----

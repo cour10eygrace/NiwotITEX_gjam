@@ -115,7 +115,9 @@ ggplot(wstarxnw, aes(x=avgT, y=mu, col=group)) + geom_point(alpha=0.1)+
         strip.text.x = element_blank())+   ylab("Steady State abundance") + xlab("Temperature (std devs)")
 
 #Fig 4
-ggpubr::ggarrange(a,b, common.legend = TRUE,  ncol = 2, nrow = 1)
+ggpubr::ggarrange(a,b, common.legend = TRUE,  ncol = 2, nrow = 1)+
+  theme_classic()+  theme(plot.margin = margin(1,0.25,0.25,1, "cm")) 
+  
 
 
 #PXW----
