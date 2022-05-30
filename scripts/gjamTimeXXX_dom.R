@@ -55,7 +55,7 @@ effort <- list(columns = 1:ncol(ydata), values = edata)
 #fill missing info in xdata for year 0 with ctl 2006 
 xdata<-mutate(xdata, depth_cm=case_when(is.na(depth_cm)&year<1~xdata_2006$depth_cm, TRUE ~ as.numeric(depth_cm)), 
               Ndep =case_when(is.na(Ndep)&year<1~xdata_2006$Ndep, TRUE ~ as.numeric(Ndep)), 
-              avgT=case_when(is.na(avgT)&year<1~xdata_2006$avgT, TRUE ~ as.numeric(avgT))) #, 
+              avgT=case_when(is.na(avgT)&year<1~xdata_2006$avgT, TRUE ~ as.numeric(avgT)))  
 #fill missing info in xdata for other years with actual values  
 xdata_fill<-mutate(enviro_all, year=year-2005)%>%rename(depth_cm0=depth_cm, Ndep0=Ndep, avgT0=avgT)%>%
   select(plot, year, depth_cm0, Ndep0, avgT0)
@@ -80,8 +80,7 @@ alphaSign <- matrix(-1, ncol(ydata), ncol(ydata)) # set as competitors
 colnames(alphaSign) <- rownames(alphaSign) <- colnames(ydata)
 
 # rhoPrior is a list indicating lo and hi values for the growth rate, which is change per time increment.
-# In this example, growth rate rho only includes an intercept, because I included no predictors (Q = 0).
-# The density-independent growth rate is given a wide prior values of ±30% per time increment:
+
 rhoPrior  <- list(lo = list(intercept = -1, depthcm = -0.5, 
                             Ndep = -0.5, avgT= -0.5), 
                   hi = list(intercept = 1, depthcm = 0.5, 
@@ -110,7 +109,7 @@ modelList <- list(
 modDAtimeXXX<- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, modelList = modelList)
 
 # save output
-save(modDAtimeXXX, file = "outputs/modDAtime_XXXoutput_dom.RData")
+#save(modDAtimeXXX, file = "outputs/modDAtime_XXXoutput_dom.RData")
 #load(file = "outputs/modDAtime_XXXoutput_dom.RData")
 
 # plot output
@@ -125,42 +124,36 @@ specColor <- c(
 )
 
 plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
-plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
-                 outFolder = 'plots/modDAtime_XXXplots_dom')
-gjamPlot(modDAtimeXXX, plotPars)
+#plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
+#                 outFolder = 'plots/modDAtime_XXXplots_dom')
+gjamPlot(modDAtimeXXX, plotPars1)
 
-#posterior_vs_prior(modDAtime)#how to plot these???
 
 #spp alphas
 alphaX<-modDAtimeXXX$parameters$alphaMu
 colnames(alphaX)<-colnames(ydata)
 row.names(alphaX)<-colnames(alphaX)  
 
-pdf(file="plots/modDAtime_XXXplots_dom/alpha_plot.pdf")
+#pdf(file="plots/modDAtime_XXXplots_dom/alpha_plot.pdf")
 corrplot(alphaX ,method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="alphas", is.corr = FALSE, 
          mar = c(2, 2, 2, 2), cl.lim = c(-1,0))
-dev.off()
+#dev.off()
 
 corr<-modDAtimeXXX$parameters$corMu
 colnames(corr)<-colnames(ydata)
 row.names(corr)<-colnames(corr)  
 
-pdf(file="plots/modDAtime_XXXplots_dom/corr_plot.pdf")
+#pdf(file="plots/modDAtime_XXXplots_dom/corr_plot.pdf")
 corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag = F, main="correlations" ,
          mar = c(2, 2, 2, 2))  
-dev.off()
+#dev.off()
 
 #calculate equillibrium abundance 
 wstarXXX <- .wrapperEquilAbund(output =   modDAtimeXXX, covars = c('depthcm', 'avgT', 'Ndep'), BYGROUP = F,
                                nsim = 100, ngrid=10,
                                verbose = T)
-save(wstarXXX, file = "outputs/wstar_XXXoutput_dom.RData")
+#save(wstarXXX, file = "outputs/wstar_XXXoutput_dom.RData")
 #load(file = "outputs/wstar_XXXoutput_dom.RData")
-
-#plot output  
-outFolder="plots/modDAtime_XXXplots_dom"
-wstar=wstarXXX
-source("scripts/ploteqabund.R") 
 

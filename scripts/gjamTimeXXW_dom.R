@@ -75,15 +75,11 @@ xdata$year<-NULL
 #does not like underscores 
 xdata<-rename(xdata, depthcm=depth_cm)
 
-#subset xdata for only Ndep to try to fix singular matrix issue  
-#xdata<-select(xdata, -depth_cm, -avgT, -plot, -year)
-
 alphaSign <- matrix(-1, ncol(ydata), ncol(ydata)) # set as competitors
 colnames(alphaSign) <- rownames(alphaSign) <- colnames(ydata)
 
 # rhoPrior is a list indicating lo and hi values for the growth rate, which is change per time increment.
-# In this example, growth rate rho only includes an intercept, because I included no predictors (Q = 0).
-# The density-independent growth rate is given a wide prior values of ±30% per time increment:
+
 rhoPrior  <- list(lo = list(intercept = -1, depthcm = -0.5, 
                             Ndep = -0.5, avgT= -0.5), 
                   hi = list(intercept = 1, depthcm = 0.5, 
@@ -96,8 +92,6 @@ priorList <- list(alphaSign = alphaSign,
 )
 
 tmp <- gjamTimePrior(xdata, ydata, edata, priorList)  
-
-#reset hi value to positive of negative priors (heterospecific) and zero for conspecific
 
 #re set to -1 and 0 for lo and hi 
 lo<- matrix(-1, ncol(ydata), ncol(ydata)) 
@@ -117,7 +111,7 @@ modelList <- list(
 modDAtimeXXW<- gjam(formula=timeList$formulaRho, xdata = xdata, ydata = ydata, modelList = modelList)
 
 # save output
-save(modDAtimeXXW, file = "outputs/modDAtime_XXWoutput_dom.RData")
+#save(modDAtimeXXW, file = "outputs/modDAtime_XXWoutput_dom.RData")
 #load(file = "outputs/modDAtime_XXWoutput_dom.RData")
 
 # plot output
@@ -132,42 +126,36 @@ specColor <- c(
 )
 
 plotPars1 <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = F)
-plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
-                 outFolder = 'plots/modDAtime_XXWplots_dom')
-gjamPlot(modDAtimeXXW, plotPars)
-
-#posterior_vs_prior(modDAtime)#how to plot this???
+#plotPars <- list(specColor=specColor, PLOTALLY=T, GRIDPLOTS=T, CLUSTERPLOTS=T, SAVEPLOTS = T, 
+#                 outFolder = 'plots/modDAtime_XXWplots_dom')
+gjamPlot(modDAtimeXXW, plotPars1)
 
 #spp alphas
 alphaX<-modDAtimeXXW$parameters$alphaMu
 colnames(alphaX)<-colnames(ydata)
 row.names(alphaX)<-colnames(alphaX)  
 
-pdf(file="plots/modDAtime_XXWplots_dom/alpha_plot.pdf")
+#pdf(file="plots/modDAtime_XXWplots_dom/alpha_plot.pdf")
 corrplot(alphaX ,method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="alphas", is.corr = FALSE, 
          mar = c(2, 2, 2, 2), cl.lim = c(-1, 0))
-dev.off()
+#dev.off()
 
 corr<-modDAtimeXXW$parameters$corMu
 colnames(corr)<-colnames(ydata)
 row.names(corr)<-colnames(corr)  
 
-pdf(file="plots/modDAtime_XXWplots_dom/corr_plot.pdf")
+#pdf(file="plots/modDAtime_XXWplots_dom/corr_plot.pdf")
 corrplot(corr, method = "color", tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag = F, main="correlations" ,
          mar = c(2, 2, 2, 2))  
-dev.off()
+#dev.off()
 
 
 #calculate equillibrium abundance 
 wstarXXW <- .wrapperEquilAbund(output =   modDAtimeXXW, covars = c('depthcm', 'avgT', 'Ndep'), BYGROUP = F,
                                nsim = 100, ngrid=10, 
                                verbose = T)
-save(wstarXXW, file = "outputs/wstar_XXWoutput_dom.RData")
+#save(wstarXXW, file = "outputs/wstar_XXWoutput_dom.RData")
 #load(file = "outputs/wstar_XXWoutput_dom.RData")
 
-#plot 
-outFolder="plots/modDAtime_XXWplots_dom"
-wstar=wstarXXW
-source("scripts/ploteqabund.R")
