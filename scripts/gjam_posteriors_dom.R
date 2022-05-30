@@ -8,32 +8,32 @@ library(bayestestR)
 
 #rhos---- 
 #XXX
-load(file = "outputs/modDAtime_XXXoutput_dom.RData")
+#load(file = "outputs/modDAtime_XXXoutput_dom.RData")
 rhosXXX<-as.data.frame(modDAtimeXXX$parameters$rhoStandXTable)
 rhosXXX<-separate(rhosXXX, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXXX$treat<-"XXX"
 
 
 #XXW
-load(file = "outputs/modDAtime_XXWoutput_dom.RData")
+#load(file = "outputs/modDAtime_XXWoutput_dom.RData")
 rhosXXW<-as.data.frame(modDAtimeXXW$parameters$rhoStandXTable)
 rhosXXW<-separate(rhosXXW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXXW$treat<-"XXW"
 
 #XNW
-load(file = "outputs/modDAtime_XNWoutput_dom.RData")
+#load(file = "outputs/modDAtime_XNWoutput_dom.RData")
 rhosXNW<-as.data.frame(modDAtimeXNW$parameters$rhoStandXTable)
 rhosXNW<-separate(rhosXNW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosXNW$treat<-"XNW"
 
 #PXW
-load(file = "outputs/modDAtime_PXWoutput_dom.RData")
+#load(file = "outputs/modDAtime_PXWoutput_dom.RData")
 rhosPXW<-as.data.frame(modDAtimePXW$parameters$rhoStandXTable)
 rhosPXW<-separate(rhosPXW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosPXW$treat<-"PXW"
 
 #PNW
-load(file = "outputs/modDAtime_PNWoutput_dom.RData")
+#load(file = "outputs/modDAtime_PNWoutput_dom.RData")
 rhosPNW<-as.data.frame(modDAtimePNW$parameters$rhoStandXTable)
 rhosPNW<-separate(rhosPNW, 'rho_{to, from}', c("group", "enviro"))                       
 rhosPNW$treat<-"PNW"
@@ -53,69 +53,12 @@ specColor <- c(
 color2<-c("#A98FBA", "#AA865A",  "#74870D", "#1C829D", "#3F4921")
 
 #reorder groups by dominance to match gjam output 
-
 rhosall<-mutate(rhosall,group = factor(group, 
       levels=c( "DOM", "SUBDOM", "MODERATE", "RARE")))
-#write.csv(rhosall, "tables/supp_table_rhos.csv")
+#table S1
+#write.csv(rhosall, "tables/supp_table_rhos.csv") 
 
-#Fig 2 V1 
-a<- ggplot(subset(rhosall,treat=="XXX"), aes(y=Estimate, x=group, color=group))+ 
-  geom_point( )+
-  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
-  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~enviro, scales='free')+ theme_bw()+ylab("Rho coefficients")+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("Control")+xlab(" ")+ scale_color_manual(values = color2)+
-  geom_hline(yintercept =0, color='black', lty=2)
-
-b<-ggplot(subset(rhosall,treat=="XXW"), aes(y=Estimate, x=group, color=group))+ 
-  geom_point( )+
-  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
-  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~enviro, scales='free')+ theme_bw()+ylab(" ")+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("Warming")+xlab(" ")+scale_color_manual(values = color2)+
-  geom_hline(yintercept =0, color='black', lty=2)
-
-c<-ggplot(subset(rhosall,treat=="XNW"), aes(y=Estimate, x=group, color=group))+ 
-  geom_point( )+
-  geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
-  #geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~enviro, scales='free')+ theme_bw()+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("N + warming")+ xlab(" ")+ ylab("Rho coefficients")+scale_color_manual(values = color2)+
-  geom_hline(yintercept =0, color='black', lty=2)
-
-d<-ggplot(subset(rhosall,treat=="PXW"), aes(y=Estimate, x=group, color=group))+ 
-  geom_point( )+
-  #geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
-  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2, position="dodge")+
-  facet_wrap(~enviro, scales='free')+ theme_bw()+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("Snow + warming")+ xlab(" ")+ ylab(" ")+scale_color_manual(values =color2)+
-  geom_hline(yintercept =0, color='black', lty=2)
-
-e<-ggplot(subset(rhosall,treat=="PNW"), aes(y=Estimate, x=group, color=group))+ 
-  geom_point( )+
-  #geom_errorbar(aes(ymin=CI_025, ymax=CI_975), width=.2, position="dodge")+
-  geom_errorbar(aes(ymin=Estimate-(1.96*SE), ymax=Estimate+(1.96*SE)), width=.2,
-                position="dodge", )+
-  facet_wrap(~enviro, scales='free')+ theme_bw()+ylab("Rho coefficients")+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  ggtitle("Snow + N + warming")+ xlab(" ")+scale_color_manual(values = color2)+
-  geom_hline(yintercept =0, color='black', lty=2)
-
-#ggpubr::ggarrange(e,d, c, b, a, common.legend = TRUE,  ncol = 2, nrow = 3)
-
-#net change in rhos??
-rhosallx<-group_by(subset(rhosall), 
-  treat, group)%>%mutate(Net=sum(Estimate))%>%
-  select(group, treat, Net)%>%rename(Estimate=Net)%>%
-  mutate(enviro="Net")%>%distinct(.)
-#rhosall<-full_join(rhosall, rhosallx)
-
-
-#Fig 2 V2-plot by dominance class 
+#Fig 2 
 
 a<- ggplot(subset(rhosall,group=="DOM"), aes(y=Estimate, x=treat, color=treat))+ 
   geom_point( )+
@@ -164,8 +107,6 @@ d<-ggplot(subset(rhosall,group=="RARE"), aes(y=Estimate, x=treat, color=treat))+
 ggpubr::ggarrange(a, b, c, common.legend = TRUE,  ncol =1, nrow = 3)+
   theme(plot.margin = margin(1,0.25,0.25,1, "cm")) 
 
-#ggpubr::ggarrange(a,b,c, d, common.legend = TRUE,  ncol = 2, nrow =2) #w/ rare spp
-
 #Fig S7-rare spp 
 d
 
@@ -173,60 +114,61 @@ d
 
 
 #alphas----
+#Fig S8 plots 
 #XXX vs XNX
 alphasXXX<-as.data.frame(modDAtimeXXX$parameters$alphaMu)
 
-#XXX vs XXW
+#XXX vs XXW (Fig S8d)
 alphasXXW<-as.data.frame(modDAtimeXXW$parameters$alphaMu)
 
 delta_alpha_XXW_XXX<-as.matrix(alphasXXW-alphasXXX)
 
-pdf(file="plots/modDAtime_XXWplots_dom/delta_alpha_plot.pdf")
+#pdf(file="plots/modDAtime_XXWplots_dom/delta_alpha_plot.pdf")
 corrplot(delta_alpha_XXW_XXX ,method = 'circle', 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas XXW-XXX", is.corr = FALSE, 
          mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
-dev.off()
+#dev.off()
 
 
-#XXX vs XNW
+#XXX vs XNW (Fig S8c)
 alphasXNW<-as.data.frame(modDAtimeXNW$parameters$alphaMu)
 
 delta_alpha_XNW_XXX<-as.matrix(alphasXNW-alphasXXX)
 
-pdf(file="plots/modDAtime_XNWplots_dom/delta_alpha_plot.pdf")
+#pdf(file="plots/modDAtime_XNWplots_dom/delta_alpha_plot.pdf")
 corrplot(delta_alpha_XNW_XXX ,method = "circle", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas XNW-XXX", is.corr = FALSE, 
          mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
-dev.off()
+#dev.off()
 
-#XXX vs PXW
+#XXX vs PXW (Fig S8b)
 alphasPXW<-as.data.frame(modDAtimePXW$parameters$alphaMu)
 
 delta_alpha_PXW_XXX<-as.matrix(alphasPXW-alphasXXX)
 
-pdf(file="plots/modDAtime_PXWplots_dom/delta_alpha_plot.pdf")
+#pdf(file="plots/modDAtime_PXWplots_dom/delta_alpha_plot.pdf")
 corrplot(delta_alpha_PXW_XXX ,method = "circle", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas PXW-XXX", is.corr = FALSE, 
          mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
-dev.off()
+#dev.off()
 
-#XXX vs PNW
+#XXX vs PNW (Fig S8a)
 alphasPNW<-as.data.frame(modDAtimePNW$parameters$alphaMu)
 
 delta_alpha_PNW_XXX<-as.matrix(alphasPNW-alphasXXX)
 
-pdf(file="plots/modDAtime_PNWplots_dom/delta_alpha_plot.pdf")
+#pdf(file="plots/modDAtime_PNWplots_dom/delta_alpha_plot.pdf")
 corrplot(delta_alpha_PNW_XXX ,method = "circle", 
          tl.cex = 0.8, tl.col="black", addCoef.col = "black",
          number.cex = 0.75, diag =T, main="delta alphas PNW-XXX", is.corr = FALSE, 
          mar = c(2, 2, 2, 2), cl.lim = c(-0.5, 0.5))
-dev.off()
+#dev.off()
 
 
-#calculations for delta alpha bar plots 
+#calculations for delta alpha bar plots (Fig 3)
 #XXW
 calcxxw<-matrix(NA, 4,3)
 row.names(calcxxw)<-row.names(delta_alpha_XXW_XXX)
@@ -287,13 +229,6 @@ calc<-mutate(calc,group = factor(group,
   mutate(treat=factor(treat, 
                  levels=c( "XXW", "XNW", "PXW", "PNW")))
 
-#Dominant only   
-ggplot(subset(calc,group=="DOM"), aes(x = treat, y = value, fill = comp)) +
-  geom_bar(stat = "identity",position="dodge", col = "black", alpha=0.5, width = 0.8) +
-  coord_flip() + theme_classic()+  facet_wrap(~group)+
-  ylab("Change in competition from control")+ xlab(" ")+scale_fill_manual(values = 
-                                                          c("#1C829D", "#74870D", "#AA865A", "#A98FBA"))
-
 #Fig 3
 ggplot(subset(calc, comp!="InterEff"), aes(x = comp, y = value, fill = treat)) +
   geom_bar(stat = "identity",position="dodge", col = "black",alpha=0.5, width=0.7)+
@@ -304,9 +239,8 @@ ggplot(subset(calc, comp!="InterEff"), aes(x = comp, y = value, fill = treat)) +
   theme_classic()+  theme(plot.margin = margin(1,0,0.5,1, "cm")) +
   theme(strip.background = element_blank())
 
-#Supp mat----
-#alphas -Table S1
 
+#alphas -Table S2
 alphasXXX<-modDAtimeXXX$parameters$alphaTable%>%
   mutate(treat="XXX")
 alphasXXW<-modDAtimeXXW$parameters$alphaTable%>%

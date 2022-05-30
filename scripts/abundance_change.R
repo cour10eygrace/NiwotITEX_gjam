@@ -352,7 +352,7 @@ summary(delta_abundx)
 #smooth term only 
 gammtest<-mgcv::gam(change ~0+ s(0+ years, by = group_code) + s(year2, bs='re'), 
                     data = group_change, method="REML")
-summary(gammtest)#r-squared low 0.095
+summary(gammtest)#Table S4
 
 AIC(gammtest0, gammtest, delta_abundx) #linear better 
 
