@@ -5,7 +5,7 @@ library(brms)
 library(ggplot2)
 
 #XXX----
-load(file = "outputs/wstar_XXXoutput_dom.RData")
+#load(file = "outputs/wstar_XXXoutput_dom.RData")
 
 #pull out of lists 
 wstarmu<-as.data.frame(wstarXXX$ccMu)%>%
@@ -25,7 +25,6 @@ wstarxxx<-cbind(wstarxxx, env)
 #wstarxxx$value<-wstarxxx$mu+wstarxxx$sd
   
 #plots
-#plot raw data-
 ggplot(wstarxxx, aes(x=depthcm, y=mu, col=group)) + geom_point(alpha=0.2)+ 
    geom_smooth(se = T, lty=2)+
 #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
@@ -50,7 +49,7 @@ ggplot(wstarxxx, aes(x=avgT, y=mu, col=group)) + geom_point(alpha=0.2)+
         strip.text.x = element_blank())+ ylab("Steady State abundance") + xlab("Temperature (std devs)")
 
 #XXW----
-load(file = "outputs/wstar_XXWoutput_dom.RData")
+#load(file = "outputs/wstar_XXWoutput_dom.RData")
 
 #pull out of lists 
 wstarmu<-as.data.frame(wstarXXW$ccMu)%>%
@@ -69,7 +68,6 @@ wstarxxw<-cbind(wstarxxw, env)
 #wstarxxw$value<-wstarxxw$mu+wstarxxw$sd
 
 #plots
-#plot raw data-
 a<-ggplot(wstarxxw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+ 
   geom_smooth(se = T, lty=2)+
   #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
@@ -80,7 +78,7 @@ a<-ggplot(wstarxxw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+
   
 
 #XNW----
-load(file = "outputs/wstar_XNWoutput_dom.RData")
+#load(file = "outputs/wstar_XNWoutput_dom.RData")
 
 #pull out of lists 
 wstarmu<-as.data.frame(wstarXNW$ccMu)%>%
@@ -98,7 +96,6 @@ wstarxnw<-arrange(wstarxnw,group)%>%
 wstarxnw<-cbind(wstarxnw, env)
 
 #plots
-#plot raw data-
 b<-ggplot(wstarxnw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+ 
   geom_smooth(se = T, lty=2)+
   #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
@@ -119,9 +116,8 @@ ggpubr::ggarrange(a,b, common.legend = TRUE,  ncol = 2, nrow = 1)+
   theme_classic()+  theme(plot.margin = margin(1,0.25,0.25,1, "cm")) 
   
 
-
 #PXW----
-load(file = "outputs/wstar_PXWoutput_dom.RData")
+#load(file = "outputs/wstar_PXWoutput_dom.RData")
 
 #pull out of lists 
 wstarmu<-as.data.frame(wstarPXW$ccMu)%>%
@@ -139,7 +135,6 @@ wstarpxw<-arrange(wstarpxw,group)%>%
 wstarpxw<-cbind(wstarpxw, env)
 
 #plots
-#plot raw data-
 c<-ggplot(wstarpxw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+ 
   geom_smooth(se = T, lty=2)+
   #  geom_ribbon(aes(ymin=mu-(sd), ymax=mu+(sd)), fill="lightgray", color="lightgray", alpha=.2) +
@@ -165,7 +160,7 @@ ggplot(wstarpxw, aes(x=avgT, y=mu, col=group)) + geom_point(alpha=0.25)+
 
 
 #PNW----
-load(file = "outputs/wstar_PNWoutput_dom.RData")
+#load(file = "outputs/wstar_PNWoutput_dom.RData")
 #pull out of lists 
 wstarmu<-as.data.frame(wstarPNW$ccMu)%>%
   pivot_longer(. , cols=everything(),names_to="group", 
@@ -192,18 +187,6 @@ d<-ggplot(wstarpnw, aes(x=Ndep, y=mu, col=group)) + geom_point(alpha=0.25)+
 #Fig S9
 ggpubr::ggarrange(d, c, b, a, e, common.legend = TRUE,  legend= "none", ncol = 3, nrow = 2)
 
-#plots
-#plot raw data-don't know how to get sds in there 
-ggplot(wstarpnw, aes(x=depthcm, y=mu, col=spp)) +geom_smooth()+
-  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
-  facet_wrap(~spp, scales ="free")
 
-ggplot(wstarpnw, aes(x=Ndep, y=mu, col=spp)) +geom_smooth()+
-  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
-  facet_wrap(~spp, scales ="free")
-
-ggplot(wstarpnw, aes(x=avgT, y=mu, col=spp)) +geom_smooth()+
-  #geom_ribbon(aes(ymin=mu-(sd/10), ymax=mu+(sd/10)), fill="lightgray", color="lightgray", alpha=.8) +
-  facet_wrap(~spp, scales ="free")
 
 
