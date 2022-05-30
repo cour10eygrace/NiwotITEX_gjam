@@ -6,11 +6,11 @@ library(ggplot2)
 #N->Nat'l atmospheric deposition program seasonal averages 
 #http://nadp.slh.wisc.edu/data/sites/siteDetails.aspx?net=NTN&id=CO02
 
-#air temp->NWT Saddle data loggers daily from EDI (2020 raw 10 min data-update after QA/QC)
+#air temp->NWT Saddle data loggers daily from EDI 
 #https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-nwt.405.4
 #ftp://niwotlter.colorado.edu/pub/raw_climate_data/ 
 
-#snow->ITEX data from Jane, Saddle data from EDI 
+#snow->ITEX data from JGS, Saddle data from EDI 
 #https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-nwt.31.17
 
 #Nitrogen----
