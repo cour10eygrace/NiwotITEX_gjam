@@ -12,6 +12,6 @@ Scripts
 3. gjamTime_setup.R<-combined processed enviro data with plant cover data (NWT_ITEX_SpComp_data_L1.csv) and sets up data obejcts needed to run gjamTime. 
 4. gjamTime_XXX_dom.R<-sources setup script (#2 above), formats data and runs gjamTime model and steady state abundance simulations. Separate script for each treatment named accordingly (XXX-CTL, XXW-warming, XNW-N + warming, PXW- snow + warming, PNW-snow + N + warming). 
 5. gjam_posteriors_dom.R<-analyzes gjamTime model posteriors (rhos, alphas) and generates Figures 2, 3.
-6. wstar_output.R<-analyzes steady state abundance distributions  generates Fig 4.
+6. wstar_output.R<-analyzes steady state abundance distributions and generates Fig 4.
 7. sensitivites_dom.R<-eigenvalues analysis of gjamTime alpha matrices to calculate stability (Table 2)
 
