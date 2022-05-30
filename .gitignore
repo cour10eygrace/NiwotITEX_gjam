@@ -42,5 +42,6 @@ vignettes/*.pdf
 #don't push model outputs or plots 
 outputs/ 
 plots/
+tables/
 #old scripts not using in final analyses
 scripts/OLD code/ 
