@@ -9,9 +9,9 @@ Data
 Scripts
 1. enviro_data.R<- pulls in raw environmental data (raw_env folder) processes and saves as data object 'Enviro.Rdata'
 2. abundance_change.R <-pulls in raw plant cover data and runs codyn functions and linear mixed effects models (generates Table 1 and Figure 1)
-3. gjamTime_setup.R<-combined processed enviro data with plant cover data (NWT_ITEX_SpComp_data_L1.csv) and sets up data obejcts needed to run gjamTime. 
-4. gjamTime_XXX_dom.R<-sources setup script (#2 above), formats data and runs gjamTime model and steady state abundance simulations. Separate script for each treatment named accordingly (XXX-CTL, XXW-warming, XNW-N + warming, PXW- snow + warming, PNW-snow + N + warming). 
+3. gjamTime_setup.R<-combines processed enviro data with plant cover data (NWT_ITEX_SpComp_data_L1.csv) and sets up data obejcts needed to run gjamTime. 
+4. gjamTime_XXX_dom.R<-sources setup script (#3 above), formats data and runs gjamTime model and steady state abundance simulations. Separate script for each treatment is named accordingly (XXX-CTL, XXW-warming, XNW-N + warming, PXW- snow + warming, PNW-snow + N + warming). 
 5. gjam_posteriors_dom.R<-analyzes gjamTime model posteriors (rhos, alphas) and generates Figures 2, 3.
 6. wstar_output.R<-analyzes steady state abundance distributions and generates Fig 4.
-7. sensitivites_dom.R<-eigenvalue analysis of gjamTime alpha matrices for stability estimates (Table 2)
+7. sensitivites_dom.R<-pulls out eigenvalue analysis of gjamTime alpha matrices for stability estimates (Table 2)
 
