@@ -13,5 +13,5 @@ Scripts
 4. gjamTime_XXX_dom.R<-sources setup script (#2 above), formats data and runs gjamTime model and steady state abundance simulations. Separate script for each treatment named accordingly (XXX-CTL, XXW-warming, XNW-N + warming, PXW- snow + warming, PNW-snow + N + warming). 
 5. gjam_posteriors_dom.R<-analyzes gjamTime model posteriors (rhos, alphas) and generates Figures 2, 3.
 6. wstar_output.R<-analyzes steady state abundance distributions and generates Fig 4.
-7. sensitivites_dom.R<-eigenvalues analysis of gjamTime alpha matrices to calculate stability (Table 2)
+7. sensitivites_dom.R<-eigenvalue analysis of gjamTime alpha matrices for stability estimates (Table 2)
 
