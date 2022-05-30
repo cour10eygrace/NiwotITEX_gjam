@@ -4,7 +4,7 @@ Plant community analyses from long term experimental manipulation plots at Niwot
 Repo structure 
 
 Data
-Raw environmental (snow depth, N deposition, air temp) and plant abundance (plot cover) data.
+-Raw environmental (snow depth, N deposition, air temp) and plant abundance (plot cover) data.
 
 Scripts
 1. enviro_data.R<- pulls in raw environmental data (raw_env folder) processes and saves as data object 'Enviro.Rdata'
