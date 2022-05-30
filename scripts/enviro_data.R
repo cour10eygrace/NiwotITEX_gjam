@@ -2,7 +2,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 #enviro data----
-#only need to run the rest if changing/updating environmental Rdata 12/15/20
+#only need to run the rest if changing/updating environmental Rdata 
 #N->Nat'l atmospheric deposition program seasonal averages 
 #http://nadp.slh.wisc.edu/data/sites/siteDetails.aspx?net=NTN&id=CO02
 
@@ -56,8 +56,8 @@ Ndep_plot<- mutate(Ndep,
 ggplot(data=Ndep_plot, aes(x=year, y=NdepCum, color=N))+ geom_point() +geom_line()+
   ylab("N deposition (g/m2)")+ theme_bw()
 
-#ggplot(data=snowdat, aes(x=year, y=depth_cm, fill=month))+ 
-#  geom_boxplot() #april is measured in 8 years and doesn't have outliers 
+ggplot(data=snowdat, aes(x=year, y=depth_cm, fill=month))+ 
+  geom_boxplot() #april is measured in 8 years and doesn't have outliers 
 
 #Temperature----
 #Munge temp data 
@@ -105,7 +105,7 @@ ggplot(temp_plot, aes(x=year2, y=avgT, color=temp)) +
 
 #Snow----
 #Munge Snow data 
-snowdat<-read.csv("data/raw_env/NWT_ITEX_snowdepth_CC.csv")#CC swapped 2011 treatment codes for April 12/15/20
+snowdat<-read.csv("data/raw_env/NWT_ITEX_snowdepth_CC.csv")
 sadsnow<-read.csv("data/raw_env/saddsnow.dw.data.csv")
 
 #Remove unclear measurements and NAs  
@@ -117,11 +117,11 @@ snowdat<-mutate(snowdat, depth_cm=case_when(depth_cm==">150"~-1,
   separate(col = date, into = c("month", "day","year"), sep = "/", remove = F)
 
 #plot
-#ggplot(data=snowdat, aes(x=year, y=depth_cm, fill=month))+ 
-#  geom_boxplot() #april is measured in 8 years and doesn't have outliers 
+ggplot(data=snowdat, aes(x=year, y=depth_cm, fill=month))+ 
+  geom_boxplot() #april is measured in 8 years and doesn't have outliers 
 
-#ggplot(data=subset(snowdat, month=="4"), aes(x=year, y=depth_cm, fill=snow_trt))+ 
-#  geom_boxplot() #most years P>X, 2012 only P measured 
+ggplot(data=subset(snowdat, month=="4"), aes(x=year, y=depth_cm, fill=snow_trt))+ 
+  geom_boxplot() #most years P>X, 2012 only P measured 
 
 #lmsnow<-lm(depth_cm~snow_trt*year, snowdat) #P>X estimate=50.5 cm 
 #coef<-lmsnow$coefficients
@@ -130,12 +130,12 @@ snowdat<-mutate(snowdat, depth_cm=case_when(depth_cm==">150"~-1,
 #take average snow depth across all saddle plots in each year (March-May)
 sadsnow2<-separate(sadsnow, col = date, into = c("month", "day","year"), sep = "/", remove = F)%>%
   filter(month=="4"|month=="5")%>% group_by(year)%>%
-  mutate(avg_depth=mean(mean_depth, na.rm=T))%>%#group_by(year)%>%mutate(AVG_depth=mean(avg_depth))%>%
+  mutate(avg_depth=mean(mean_depth, na.rm=T))%>%
   select( year, month, avg_depth)%>%distinct(.)%>%mutate(ct=n_distinct(avg_depth))
-#sadsnow2<-filter(sadsnow2, year>2005)
+
 
 #combine with ITEX snow data
-#use April/May acg for all years except 2020 use May only bc April not measured 
+#use April/May avg for all years except 2020 use May only bc April not measured 
 snow_all<-left_join(sadsnow2, snowdat)%>%filter(year>2005)%>%
   mutate(keep=case_when(month<5&year<2020~1, 
                         month>4&year>2019~1, TRUE~0))%>%filter(keep>0)
@@ -178,7 +178,7 @@ snow_allX<-rbind(snow_all, snow_miss)
 snow_allX$block<-as.factor(snow_allX$block)
 snowmod<-lm(depth_cm~avg_depth +snow_trt + as.factor(block), snow_allX)
 summary(snowmod)#r2=0.75
-hist(snow_all$depth_cm)#looks ok
+hist(snow_all$depth_cm)
 
 #infill missing snow info with correct equations 
 coef<-coef(snowmod)
@@ -199,7 +199,7 @@ snow_allXX<-mutate(snow_allXX, depth_cm=ifelse(is.na(depth_cm), depth_cm2, depth
 
 #add infilling info 
 snow_allXX<-select(snow_allXX, -keep)%>%mutate(infill=ifelse(depth_cm==depth_cm2, 1, 0))
-#write.csv(snow_allXX, "data/infilled_snow_data.csv")
+
 
 #plot 
 ggplot(data=snow_allXX, aes(x=as.factor(year), y=depth_cm, fill=snow_trt))+ 
@@ -263,24 +263,4 @@ enviro<-left_join(enviro, temp)%>%distinct(.)
 
 save(enviro, file="data/Enviro.Rdata")
 
-#mean center data- don;t need to do beforehand bc model will do so 
-#improves indirect spp x enviro estimates 
-#snowmn<-mean(enviro$depth_cm)
-#snowsd<-sd(enviro$depth_cm)
-#Nmn<-mean(enviro$Ndep)
-#Nsd<-sd(enviro$Ndep) 
-#Ncmn<-mean(enviro$NdepCum)
-#Ncsd<-sd(enviro$NdepCum) 
-#tempmn<-mean(enviro$avgT)
-#tempsd<-sd(enviro$avgT)
-#enviro$depth_cm2<-((enviro$depth_cm-snowmn)/snowsd)
-#hist(enviro$depth_cm)
-#enviro$Ndep2<-((enviro$Ndep-Nmn)/Nsd)
-#hist(enviro$Ndep)
-#enviro$NdepCum2<-((enviro$NdepCum-Ncmn)/Ncsd)
-#hist(enviro$NdepCum)
-#enviro$avgT2<-((enviro$avgT-tempmn)/tempsd)
-#hist(enviro$avgT)
-
-#save(enviro, file="data/Enviro.Rdata")
 

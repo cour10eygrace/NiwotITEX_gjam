@@ -44,8 +44,8 @@ sppcomp <- subset(sppcomp, spp != "bare" & spp != "litter" & spp != "moss" & spp
                     spp != "rock" & spp != "FORB_SP1" & spp != "SALGLA")
 
 #look at distribution of spp coverage over time 
-#rare<-group_by(sppcomp, spp)%>%count()
-#rare<-mutate(rare, plotyears_perc=n/720)
+rare<-group_by(sppcomp, spp)%>%count()
+rare<-mutate(rare, plotyears_perc=n/720)
 #top 8 spp are in >85% of plot years, remaining spp are in less than half (max=47%)
 
 #look at total abundance in control plots over time 
@@ -75,18 +75,10 @@ spp_abundw <- select(spp_abund, -veg_hits, -rel_abund)%>%
 
 # group into 4 dominance categories Desc=Dom, Artsco, Geum, Carsco=SubDom, Callep, Tripar, Bisbis, 
 # Genalg=moderate, rest=rare (based on hits in XXX plots-check for values )
-#spp_abundw<-relocate(spp_abundw, CASOCC, .after = TRIPAR)
-#spp_abundw<-relocate(spp_abundw, STELON, .after = TRIPAR)
-#spp_abundw<-relocate(spp_abundw, STELON, .after = TRIPAR)
-#spp_abundw<-rowwise(spp_abundw)%>%mutate(RARE=sum(c_across(STELON:TAROFF)))
 spp_abundw<-select(spp_abundw, DESCAE, ARTSCO, GEUROS, CARSCO,GENALG, BISBIS, CALLEP, TRIPAR,
                    MERLAN, CASOCC, BISVIV, CHIJAM, ERISIM, FESBRA, LEWPYG, LLOSER, LUZSPI, POTDIV, RHOINT, STELON)
-#spp_abundw<-relocate(spp_abundw, GEUROS, .after = ARTSCO)
-#spp_abundw<-relocate(spp_abundw, CALLEP, .after = TRIPAR)
-#spp_abundw<-relocate(spp_abundw, BISBIS, .after = TRIPAR)
 spp_abundw<-rowwise(spp_abundw)%>%mutate(SUBDOM=sum(c_across(ARTSCO:CARSCO)))
 spp_abundw<-rowwise(spp_abundw)%>%mutate(MODERATE=sum(c_across(GENALG:CALLEP)))
-#spp_abundw<-rowwise(spp_abundw)%>%mutate(RARE=sum(c_across(MERLAN:BISVIV))) #50 hits
 spp_abundw<-rowwise(spp_abundw)%>%mutate(RARE=sum(c_across(MERLAN:STELON))) #20 hits
 
 spp_abundw<-select(spp_abundw, DESCAE, SUBDOM, MODERATE, RARE, year, plot)%>%rename(DOM=DESCAE)
